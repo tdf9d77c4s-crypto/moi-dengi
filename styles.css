@@ -603,3 +603,98 @@ html[data-pet="dachshund"] #view-home .pet-stage{bottom:-80px!important}
 
 /* Keep a single doorway to weekly Stories inside Analytics. */
 #view-analytics #stories-analytics{display:none!important}
+
+/* 3.2 PREMIUM FLOW — one account tap, one clean composer, one understandable analytics screen */
+#quick-top,#sidebar-install,#view-home .world-quick-actions{display:none!important}
+.flow-account-hint{font-size:12px;color:var(--muted);margin:0 0 9px 4px;letter-spacing:0}
+#view-home .premium-account{cursor:pointer;transition:transform .17s ease,border-color .17s ease,filter .17s ease}
+#view-home .premium-account:hover{transform:translateY(-2px);filter:brightness(1.07)}
+#view-home .premium-account:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* Restore the switcher in top bar instead of hiding it with legacy selectors. */
+.topbar #paw-switch{display:grid!important;place-items:center;visibility:visible!important}
+#view-home .living-theater{height:152px!important;overflow:hidden!important;min-height:0!important}
+#view-home .mascot-viewer{width:53%!important;max-width:none!important;min-width:0!important;left:auto!important;right:0!important;top:0!important;bottom:0!important;height:100%!important;transform:none!important;overflow:visible!important;pointer-events:none!important}
+#view-home .pet-stage,html[data-pet="dachshund"] #view-home .pet-stage{height:172px!important;width:100%!important;max-width:305px!important;bottom:-10px!important;right:0!important;left:auto!important;top:auto!important;transform:none!important;overflow:visible!important;pointer-events:auto!important}
+#view-home .pet-stage img#pet-cutout{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center bottom!important;display:block!important}
+#view-home .living-theater::after{content:'Финансы без лишнего.'!important;left:24px!important;font-size:clamp(17px,2vw,22px)!important;top:46%!important;max-width:49%!important}
+#view-home .theater-paw{display:none!important}
+/* Main navigation / center add no longer needed; accounts open sheet directly */
+.mobile-nav{justify-content:space-around!important}
+.mobile-nav button{flex:1 1 0!important;min-width:0!important}
+.mobile-nav button span{font-size:19px}
+/* Simple category breakdown panel, without nested click targets inside a button */
+.flow-analysis-lead{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px!important;margin:0 0 16px!important}
+.flow-analysis-lead h3{font-size:20px;letter-spacing:-.03em;margin:5px 0}
+.flow-analysis-lead p{font-size:12px;line-height:1.5;color:var(--muted);max-width:460px;margin:0}
+.flow-period{display:flex;gap:3px;padding:4px;background:#0f1723b8;border:1px solid #ffffff12;border-radius:999px;flex:none}
+.flow-period button{background:none;border:0;color:#a3b0c3;padding:9px 15px;border-radius:999px;cursor:pointer;font-weight:650;font-size:12px}
+.flow-period button.active{background:#edd0a6;color:#1f2228}
+#analysis-donut{align-items:stretch!important;gap:30px!important;padding:20px 5px!important}
+#analysis-donut .flow-big-donut{width:190px!important;align-self:center}
+#analysis-donut .flow-donut-legend{flex:1;min-width:0}
+#analysis-donut .flow-donut-line{display:grid!important;grid-template-columns:10px minmax(0,1fr) auto 46px;gap:9px;align-items:center;width:100%;border:0;border-bottom:1px solid #ffffff0f;border-radius:0;padding:10px 4px;background:none;color:var(--text);text-align:left;cursor:pointer}
+#analysis-donut .flow-donut-line:hover{background:#ffffff08}
+#analysis-donut .flow-donut-line:disabled{opacity:.65;cursor:default}
+#analysis-donut .flow-donut-amount{font-size:12px;color:#d9dfea;font-variant-numeric:tabular-nums}
+#analysis-donut .flow-donut-line .donut-share{font-size:12px;font-variant-numeric:tabular-nums;text-align:right;color:#edd0a6}
+#analysis-donut .donut-name{font-weight:650;overflow-wrap:anywhere}
+/* Professional bottom-sheet financial entry */
+.modal.flow-sheet .modal-backdrop{background:#03070cba;backdrop-filter:blur(8px)}
+.modal.flow-sheet .modal-panel{border:1px solid rgba(255,255,255,.12);background:linear-gradient(165deg,#1b2635,#111926 72%);box-shadow:0 28px 100px #000b;border-radius:25px;padding:24px;max-width:475px}
+.modal.flow-sheet .modal-head{margin-bottom:13px}
+.modal.flow-sheet .modal-head h2{font-size:24px;letter-spacing:-.04em}
+.flow-type-tabs{display:flex;gap:4px;border-radius:15px;padding:4px;background:rgba(5,10,20,.42);border:1px solid #ffffff10}
+.flow-type-tabs button{flex:1;border:0;border-radius:12px;padding:12px 8px;background:transparent;font-weight:680;color:#a8b4c6;font-size:13px;cursor:pointer}
+.flow-type-tabs button.active{background:#e9cfab;color:#22232a;box-shadow:0 5px 16px #0003}
+.flow-sum{display:flex;flex-direction:column;align-items:center;gap:9px;padding:24px 0 18px}
+.flow-sum>label{color:#acbac9;font-size:12px;font-weight:650}
+.flow-sum-input{width:100%;display:flex;align-items:center;justify-content:center;gap:10px}
+.flow-sum-input input{background:none!important;border:0!important;outline:0!important;box-shadow:none!important;text-align:right!important;width:min(63%,245px);font-size:clamp(37px,6vw,54px)!important;font-weight:760!important;letter-spacing:-.055em;color:#f9f6f0!important;padding:0!important;min-height:58px}
+.flow-sum-input input::placeholder{color:#6b7c90}
+.flow-sum-input>span{font-size:14px;color:#cfb991;font-weight:730}
+.flow-field-title{font-size:13px;font-weight:750;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.flow-field-title>span{font-weight:400;color:var(--muted);font-size:11px}
+.flow-category-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.flow-category-chips button{min-width:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;border:1px solid #ffffff15;border-radius:12px;padding:12px 7px;background:#1f2b3a;color:#dbe2ea;font-size:12px;font-weight:630;cursor:pointer}
+.flow-category-chips button.active{border-color:#e9cba3;background:#e9cba31b;color:#ffe0b5}
+.flow-all-cats{margin-bottom:12px}
+.flow-all-cats label{display:block;color:#97a7ba;font-size:11px;margin:0 0 5px}
+.flow-all-cats select,.flow-entry-fields select,.flow-entry-fields input{background:#182434;border:1px solid #ffffff1a;border-radius:12px;color:var(--text);width:100%;min-height:43px;padding:9px 11px}
+.flow-entry-fields .field{margin:0 0 11px!important}
+.flow-entry-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+.flow-entry-fields>p{grid-column:1/-1;color:var(--muted);font-size:11px;line-height:1.5;margin:0 0 9px}
+.flow-entry-extra{border-top:1px solid #ffffff16;margin-top:4px;padding-top:6px}
+.flow-entry-extra summary{display:flex;justify-content:space-between;cursor:pointer;color:#a5b5c7;font-size:12px;padding:8px 0;list-style:none}
+.flow-entry-extra summary::-webkit-details-marker{display:none}
+.flow-entry-extra .field{margin:10px 0!important}
+.flow-entry-extra input{width:100%;border-radius:12px}
+.modal.flow-sheet .flow-save{padding:16px;border-radius:14px;font-size:15px;letter-spacing:.005em;margin-top:12px}
+@media(max-width:720px){
+  #view-home .living-theater{height:113px!important;min-height:113px!important;border-radius:19px!important}
+  #view-home .mascot-viewer{width:49%!important;right:0!important;height:100%!important;overflow:visible!important}
+  #view-home .pet-stage,html[data-pet="dachshund"] #view-home .pet-stage{height:130px!important;width:100%!important;max-width:190px!important;bottom:-5px!important;right:-3px!important;left:auto!important;transform:none!important}
+  #view-home .pet-stage img#pet-cutout{object-fit:contain!important;object-position:bottom center!important}
+  #view-home .living-theater::after{font-size:15px!important;max-width:49%!important;left:15px!important}
+  .flow-account-hint{font-size:11px}
+  .flow-analysis-lead{flex-direction:column;align-items:stretch;padding:16px!important}
+  .flow-period{align-self:flex-start}
+  #analysis-donut{flex-direction:column;align-items:center!important;padding:10px 0!important;gap:18px!important}
+  #analysis-donut .flow-big-donut{width:176px!important}
+  #analysis-donut .flow-donut-legend{width:100%}
+  .modal.flow-sheet{align-items:end!important}
+  .modal.flow-sheet .modal-panel{width:100%;max-width:none;max-height:92dvh;border-radius:25px 25px 0 0;padding:19px 17px max(25px,env(safe-area-inset-bottom));border-bottom:0}
+  .flow-category-chips{gap:6px}
+  .flow-category-chips button{font-size:11px;padding:11px 6px}
+}
+@media(prefers-reduced-motion:reduce){.flow-account-hint,.modal.flow-sheet .modal-panel{animation:none!important}}
+
+/* Make the most important visual instantly discoverable. Extras are optional. */
+#view-analytics>.donut-panel{width:100%;padding:20px;margin:0 0 16px!important;background:linear-gradient(160deg,#182332,#101923);border:1px solid #ffffff1a;border-radius:22px}
+#view-analytics>.donut-panel .donut-heading{display:none!important}
+#view-analytics>.donut-panel .stories-analytics{display:none!important}
+.flow-more-stats{margin:0 0 20px;border:1px solid #ffffff17;border-radius:18px;padding:0 16px;background:#111b298c}
+.flow-more-stats>summary{display:flex;justify-content:space-between;align-items:center;color:#cdd5df;font-weight:630;cursor:pointer;padding:18px 4px;list-style:none}
+.flow-more-stats>summary::-webkit-details-marker{display:none}
+.flow-more-stats[open]>summary{border-bottom:1px solid #ffffff18;margin-bottom:15px}
+.flow-more-stats .analysis-stats,.flow-more-stats .analysis-extras,.flow-more-stats .analytics-grid{margin-bottom:14px}
+@media(max-width:720px){#view-analytics>.donut-panel{padding:18px 14px}}
