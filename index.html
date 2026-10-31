@@ -2,16 +2,16 @@
 <html lang="ru" data-theme="neobank">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a1018"><meta name="color-scheme" content="dark">
-<meta name="description" content="Мои деньги — личный финансовый трекер, расходы, бюджеты и накопления"><meta name="application-version" content="3.2.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.unsplash.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self'; manifest-src 'self'">
+<meta name="theme-color" content="#151619"><meta name="color-scheme" content="dark">
+<meta name="description" content="Мои деньги — личный финансовый трекер, расходы, бюджеты и накопления"><meta name="application-version" content="3.3.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.unsplash.com; connect-src 'self' https://www.agroprombank.com https://agroprombank.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self'; manifest-src 'self'">
 <link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/png" href="./icon-192.png"><link rel="apple-touch-icon" href="./icon-192.png">
-<link rel="stylesheet" href="./styles.css"><title>Мои деньги · Premium Flow 3.2</title>
+<link rel="stylesheet" href="./styles.css"><title>Мои деньги · Editorial 3.3</title>
 </head>
-<body>
+<body class="editorial-edition">
 <div class="world-background" aria-hidden="true"><div class="world-world"></div><div class="world-vignette"></div><div class="world-glimmers"></div></div>
 <div id="auth" class="auth hidden">
- <div class="auth-card"><div class="auth-mark">₽</div><span class="eyebrow">МОИ ДЕНЬГИ · 3.2</span>
+ <div class="auth-card"><div class="auth-mark">₽</div><span class="eyebrow">МОИ ДЕНЬГИ · 3.3</span>
  <h1 id="auth-title">Открыть личный учёт</h1><p id="auth-description" class="muted">Введи свой пароль для доступа к защищённым данным этого браузера.</p>
  <form id="auth-form"><label for="auth-pass">Пароль</label><input id="auth-pass" type="password" autocomplete="current-password" minlength="8" required placeholder="Пароль от личных записей">
  <div id="confirm-wrap" class="hidden"><label for="auth-confirm">Повтори пароль</label><input id="auth-confirm" type="password" autocomplete="new-password" placeholder="Повтори пароль"></div>
@@ -38,7 +38,7 @@
 <section class="view active" id="view-home">
  <section class="living-theater" id="living-theater" data-pet="capybara" aria-label="Живой персонаж и атмосферный фон">
   <div class="hero-noise" aria-hidden="true"></div>
-  <div class="theater-copy"><span class="eyebrow">ТВОЁ ПРОСТРАНСТВО</span><h2 id="mascot-hero-title">Финансы в удовольствие.</h2><p id="mascot-hero-sub">Простые решения. Красивые привычки.</p></div>
+  <div class="theater-copy"><span class="eyebrow">МОИ ДЕНЬГИ · EDITORIAL</span><h2 id="mascot-hero-title">Баланс<br>под рукой.</h2><p id="mascot-hero-sub">Счета, история и расходы в одном месте.</p></div>
   <button id="theater-paw" class="theater-paw" type="button" title="Сменить персонажа" aria-label="Сменить персонажа: капибара или такса">🐾 <span>Персонаж</span></button>
   <div class="mascot-viewer" id="mascot-viewer" role="group" aria-label="Нажми на персонажа, чтобы увидеть реакцию">
     <button class="pet-stage" id="pet-tap" type="button" aria-label="Погладить персонажа и увидеть реакцию"><img id="pet-cutout" src="./capybara.png" alt="Капибара с чашкой кофе" draggable="false" loading="eager"><img id="pet-tail" class="pet-tail hidden" src="./dachshund-tail.png" alt="" draggable="false"><span id="pet-extra" class="pet-extra" aria-hidden="true">✧</span><span class="pet-star">✦</span><span class="pet-shimmer">✧</span></button>
@@ -46,6 +46,11 @@
     <span id="mascot-fallback-animal" class="hidden">🦫</span>
   </div>
   <div class="theater-bottom"><div class="mascot-speech"><span class="speech-pulse"></span><span id="mascot-say">Нажми на меня — будет сюрприз.</span></div><span class="turn-hint">Коснись персонажа ✦</span></div>
+</section>
+<section class="editorial-overview" id="editorial-overview" aria-label="Общая оценка активов">
+  <div class="editorial-overview-title"><span>Общий баланс <small>· оценка по курсу</small></span><button id="edit-fx" type="button" class="editorial-rate-link" title="Настроить курсы">Курсы ↗</button></div>
+  <div class="editorial-total-line"><strong id="net-total">—</strong><select id="net-base" aria-label="Основная валюта"><option value="RUP">RUP</option><option value="USD">USD</option><option value="RUB">RUB</option></select></div>
+  <div id="net-rate-note" class="editorial-rate-note">Курсы не загружены</div>
 </section>
 <div class="vault-head"><div><h2>Мои счета</h2></div><div class="everyday-vault-actions"><span class="vault-note">Нажми для подробностей</span><button id="privacy-toggle" class="privacy-toggle" type="button" aria-pressed="false" aria-label="Скрыть суммы счетов" title="Скрыть балансы"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2.3 12S5.9 5.5 12 5.5 21.7 12 21.7 12 18.1 18.5 12 18.5 2.3 12 2.3 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="M3 21 21 3"/></svg></button></div></div>
   <p class="flow-account-hint">Выбери счёт, чтобы записать расход, доход или перевод</p>
@@ -91,7 +96,10 @@
  <button type="button" data-page-link="analytics" class="clean-hub-tile"><span class="clean-hub-icon">◉</span><span><strong>Аналитика</strong><small>Круг расходов, итоги недели</small></span><span aria-hidden="true">→</span></button>
  <button type="button" data-page-link="plans" class="clean-hub-tile"><span class="clean-hub-icon">◎</span><span><strong>Цели и платежи</strong><small>Накопления и регулярные траты</small></span><span aria-hidden="true">→</span></button>
  </div>
- <details class="clean-settings-drawer" id="clean-settings-drawer"><summary>Настройки приложения <span aria-hidden="true">⌄</span></summary><div class="settings-grid">
+ <details class="clean-settings-drawer" id="clean-settings-drawer"><summary>Настройки приложения <span aria-hidden="true">⌄</span></summary><div class="settings-grid"><div class="panel fx-settings-panel" id="fx-settings-panel"><h3>Общий баланс и курсы</h3><p class="muted">RUP — рубли ПМР, RUB — российские рубли. Общий баланс — оценка, не сумма, доступная для немедленного обмена.</p>
+<div class="fx-field-grid"><div><label for="fx-usd-rup">1 USD в RUP</label><input id="fx-usd-rup" type="number" step="0.0001" min="0.0001" inputmode="decimal"></div><div><label for="fx-rub-rup">1 RUB в RUP</label><input id="fx-rub-rup" type="number" step="0.000001" min="0.000001" inputmode="decimal"></div><div><label for="fx-usdt-usd">1 USDT в USD</label><input id="fx-usdt-usd" type="number" step="0.0001" min="0.0001" inputmode="decimal"></div></div>
+<p class="tiny muted" id="fx-status">Источник курса будет показан здесь.</p>
+<div class="button-row"><button id="fx-save" type="button" class="btn primary small">Сохранить курсы</button><button id="fx-refresh" type="button" class="btn outline small">Проверить курс банка</button></div><p class="tiny muted">Автоматическое обновление зависит от разрешений браузера и доступности XML-сервиса банка. При сбое сохраняются последние курсы. <a href="https://www.agroprombank.com/eshche/poleznoe/kursy-valyut/" target="_blank" rel="noopener noreferrer">Курсы Агропромбанка ↗</a></p></div>
  
  <div class="panel pet-settings"><div class="panel-title-row"><div><span class="eyebrow">НАСТРОЙ ДНЯ</span><h3>Твой персонаж</h3></div><span class="paw-settings-icon">✦</span></div><p class="muted">Переключай два разных мира: спокойный вечер с капибарой или ночной город с таксой.</p><div class="pet-choice-row"><button class="pet-choice" data-pet-choice="capybara" type="button"><span class="pet-choice-icon">◕</span><span><strong>Капибара</strong><small>Тепло и спокойствие</small></span><span class="pet-choice-check">✓</span></button><button class="pet-choice" data-pet-choice="dachshund" type="button"><span class="pet-choice-icon">♞</span><span><strong>Такса</strong><small>Энергия и движение</small></span><span class="pet-choice-check">✓</span></button></div><label class="toggle-row" style="margin-top:17px"><input type="checkbox" id="mascot-motion" checked><span>Живые движения персонажа</span></label><p class="tiny muted">Плавная анимация останавливается, если включено уменьшение движения в настройках устройства.</p></div>
  <div class="panel premium-tools"><h3>Инструменты</h3><p class="muted">Аналитика, календарь и расширенные функции — когда понадобятся.</p><div class="premium-tools-actions"><button class="btn outline" type="button" data-page-link="analytics">▥ Смотреть аналитику</button><button class="btn outline" type="button" data-page-link="plans">◎ Цели и платежи</button></div></div>
@@ -103,7 +111,7 @@
  <details class="panel collapsible"><summary>Резервные копии и перенос <span>▾</span></summary><p class="muted" id="backup-warning">В режиме без пароля JSON и CSV содержат данные без шифрования.</p><div class="button-row"><button id="export-json" class="btn outline" type="button">↓ Резервная копия JSON</button><button id="export-csv" class="btn outline" type="button">↓ CSV</button><button id="import-json" class="btn outline" type="button">↑ Восстановить JSON</button><input type="file" id="file-import" accept=".json,application/json" class="hidden"></div><p class="tiny muted">Импорт заменяет текущие записи. Перед ним сохрани копию.</p></details>
  <details class="panel collapsible"><summary>Конфиденциальность <span>▾</span></summary><p id="privacy-info" class="muted"></p><div class="button-row"><button id="protect-data" class="btn outline" type="button">Защитить паролем</button><button id="change-password" class="btn outline" type="button">Сменить пароль</button><button id="lock-data" class="btn outline" type="button">Закрыть учёт</button><button id="reset-data" class="btn danger" type="button">Удалить локальные данные</button></div></details>
  <div class="panel"><h3>Приложение на телефоне</h3><p class="muted">Установи сайт на главный экран. После первого посещения приложение работает и без интернета, но данные между устройствами не синхронизируются.</p><button id="install-btn" class="btn outline" type="button">＋ Установить приложение</button><p id="install-hint" class="tiny muted"></p></div>
-</div></details><footer>Мои деньги 3.2 · данные в браузере · синхронизации между устройствами пока нет</footer></section>
+</div></details><footer>Мои деньги 3.3 · данные в браузере · синхронизации между устройствами пока нет</footer></section>
 </main></div>
 <nav class="mobile-nav" aria-label="Навигация по приложению"><button data-page-link="home" class="active"><span>▦</span>Главная</button><button data-page-link="transactions"><span>⇄</span>История</button><button data-page-link="analytics"><span>◉</span>Аналитика</button><button data-page-link="settings"><span>⚙</span>Ещё</button></nav>
 </div>

@@ -1,5 +1,5 @@
-/* Premium Flow 3.2: network-first, offline fallback. Never touches private data. */
-const CACHE='moi-dengi-pwa-v320-20261031-1';
+/* Editorial 3.3: network-first, offline fallback. Never touches private data. */
+const CACHE='moi-dengi-pwa-v330-20261031-1';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./pet-actions.js','./capybara.png','./dachshund.png','./dachshund-body.png','./dachshund-tail.png','./world-capybara.webp','./world-dachshund.webp','./version.json','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 const INDEX=new URL('./index.html',self.registration.scope).href;
 const SCOPE=new URL(self.registration.scope);

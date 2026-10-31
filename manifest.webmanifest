@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Мои деньги — Premium Flow",
+  "name": "Мои деньги — Editorial",
   "short_name": "Мои деньги",
-  "description": "Простой учёт доходов, расходов и целей с атмосферными персонажами",
+  "description": "Минималистичный финансовый трекер: четыре счета, общий баланс, обмен валют, история и аналитика",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -10,8 +10,8 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#0a1018",
-  "theme_color": "#0a1018",
+  "background_color": "#0b0c0f",
+  "theme_color": "#151619",
   "lang": "ru",
   "icons": [
     {
