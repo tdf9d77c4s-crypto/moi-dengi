@@ -18,8 +18,30 @@
  }
  function celebrateIncome(){if(fire('pet-happy',1600))say(kind==='capybara'?'Хорошие новости! ☕':'Ура, пополнение! 🐾')}
  function celebrateGoal(){if(fire('pet-happy',2100))say('Поздравляю с достигнутой целью! ✨')}
+ let petPressTimer=null,ignoreClickOnce=false,lastShortClick=0;
+ function secretReact(){
+  const stage=$('living-theater');if(!stage)return;
+  const extra=$('pet-extra');if(extra)extra.textContent=kind==='capybara'?'✦':'♡';
+  if(kind==='capybara'){stage.classList.remove('pet-secret');void stage.offsetHeight;stage.classList.add('pet-secret');say('Немного волшебства — и возвращаемся к планам. ✨')}
+  else{stage.classList.remove('pet-secret');void stage.offsetHeight;stage.classList.add('pet-secret');say('Такса нашла повод повилять хвостом! ♡')}
+  setTimeout(()=>stage.classList.remove('pet-secret'),2200);
+ }
+ function calmReact(){
+  const stage=$('living-theater');if(!stage)return;stage.classList.add('pet-calm');
+  say(kind==='capybara'?'Тихий момент. Всё хорошо. ☕':'Такса довольна: её погладили! 🐾');
+  setTimeout(()=>stage.classList.remove('pet-calm'),2100);
+ }
  function init({pet='capybara',motion:active=true}={}){motion=!!active&&!reduce.matches;setPet(pet);document.documentElement.classList.toggle('pet-motion-off',!motion);
-  const button=$('pet-tap');if(button&&!button.dataset.mascotListener){button.addEventListener('click',react);button.dataset.mascotListener='yes'}
+  const button=$('pet-tap');if(button&&!button.dataset.mascotListener){
+   button.addEventListener('click',()=>{
+    if(ignoreClickOnce){ignoreClickOnce=false;return}
+    const now=Date.now();if(now-lastShortClick<360){lastShortClick=0;secretReact();return}
+    lastShortClick=now;react();
+   });
+   button.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;clearTimeout(petPressTimer);petPressTimer=setTimeout(()=>{ignoreClickOnce=true;calmReact()},650)});
+   for(const ev of ['pointerup','pointercancel','pointerleave'])button.addEventListener(ev,()=>clearTimeout(petPressTimer));
+   button.dataset.mascotListener='yes'
+  }
  }
  function setMotion(active){motion=!!active&&!reduce.matches;document.documentElement.classList.toggle('pet-motion-off',!motion)}
  function setMood(m){mood=m;const el=$('living-theater');if(el)el.dataset.mood=m}

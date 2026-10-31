@@ -482,3 +482,46 @@ html[data-pet="dachshund"] #view-home .pet-stage{bottom:-80px!important}
  #view-analytics .analysis-stats>.analytics-grid .donut-visual{width:180px}
  #view-analytics .analysis-stats>.analytics-grid .donut-center{inset:24px}
 }
+
+/* ================= 3.0 Everyday: premium functional details ================= */
+.everyday-vault-actions{display:flex;align-items:center;gap:10px}
+.privacy-toggle{display:grid;place-items:center;width:38px;height:38px;border:1px solid #ffffff2c;border-radius:12px;color:var(--muted);background:#ffffff0d;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.privacy-toggle svg{width:20px;height:20px}.privacy-toggle:hover{color:var(--text);background:#ffffff1b}.privacy-toggle:active{transform:scale(.94)}
+.privacy-toggle .eye-slash{opacity:0;transition:opacity .2s}.privacy-toggle.masked .eye-slash{opacity:1}
+.privacy-toggle.masked{color:#e9c999;border-color:#e9c99977}
+.pa-value{font-variant-numeric:tabular-nums}.pa-number{display:inline-block;min-width:1ch}
+.everyday-shortcuts{padding:2px 2px 15px;margin:0 0 2px}.everyday-shortcuts-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 4px 10px}
+.everyday-shortcuts-title strong{font-size:14px;letter-spacing:-.01em}.everyday-shortcuts-title>span{font-size:10px;color:var(--muted)}
+.everyday-shortcuts-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.everyday-shortcut{display:flex;align-items:center;gap:10px;min-width:0;padding:12px 11px;border-radius:15px;color:var(--text);border:1px solid #ffffff20;cursor:pointer;text-align:left;background:linear-gradient(145deg,#ffffff12,#ffffff08);transition:transform .19s ease,border-color .19s ease,background .19s ease}
+.everyday-shortcut:hover{transform:translateY(-2px);border-color:#ecc18b87;background:#ffffff1d}.everyday-shortcut:active{transform:scale(.985)}
+.shortcut-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:11px;background:#cda76a1e;color:#edcd9b;flex:none;font-size:20px}
+.shortcut-label{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}.shortcut-label strong{font-size:12px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.shortcut-label small{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.shortcut-plus{font-size:19px;color:#e8c797;opacity:.9}
+.everyday-confirm{text-align:center;padding:10px 6px 22px}.shortcut-confirm-icon{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;margin:0 auto 12px;background:#edca9520;color:#f0c78b;font-size:28px}.everyday-confirm h3{font-size:17px;margin:0 0 12px}
+.repeat-amount{font-size:34px;font-weight:800;letter-spacing:-.04em}.repeat-amount small{font-size:13px;color:var(--muted);margin-left:3px}.everyday-confirm p{font-size:12px;margin:13px auto 0;max-width:300px}
+.everyday-insight{display:flex;align-items:center;gap:12px;padding:14px 16px!important;margin:0 0 13px!important;background:linear-gradient(115deg,rgba(15,25,39,.95),rgba(29,35,49,.92))!important}
+.everyday-insight-icon{width:37px;height:37px;flex:none;display:grid;place-items:center;border:1px solid #e1bf8d44;border-radius:12px;background:#f0c99414;color:#ebc68c;font-size:23px}
+.everyday-insight>div{min-width:0;flex:1}.everyday-insight .eyebrow{font-size:9px;letter-spacing:.1em;color:#e6be86}
+.everyday-insight p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.stories-launch,.stories-analytics{white-space:nowrap;border:1px solid #e9ca964b;border-radius:11px;padding:9px 11px;color:#f3d3a3;background:#dbb47b12;font-family:inherit;font-size:12px;cursor:pointer}
+.stories-launch:hover,.stories-analytics:hover{background:#dabc8830}.stories-analytics{margin:0 0 16px;width:100%}
+.everyday-story{border-radius:18px;overflow:hidden;background:linear-gradient(145deg,#28354b,#121b2a);border:1px solid #ffffff24;position:relative}
+.everyday-story[data-accent=green]{background:linear-gradient(135deg,#254c42,#101d29)}.everyday-story[data-accent=blue]{background:linear-gradient(135deg,#273c66,#141925)}
+.story-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:14px 16px 0}.story-progress i{height:3px;border-radius:9px;background:#ffffff3b}.story-progress i.complete{background:#f9d29a}
+.story-inner{padding:18px 22px 24px;text-align:center;min-height:292px;display:flex;flex-direction:column;align-items:center;justify-content:center}.story-inner .eyebrow{font-size:10px;color:#f7d29e}
+.story-illustration{font-size:48px;color:#edd09f;margin:14px 0 4px;text-shadow:0 0 30px #ffe7a16e;animation:story-glow 3.5s ease-in-out infinite alternate}
+.story-inner h3{margin:8px 0;font-size:19px}.story-big{font-size:clamp(24px,5vw,37px);font-weight:800;letter-spacing:-.06em;max-width:100%;overflow-wrap:anywhere}.story-inner p{max-width:330px;color:#c7d3e1;font-size:12px;line-height:1.55}
+.story-controls{display:flex;gap:10px;padding:0 17px 17px}.story-controls>.btn{flex:1}.story-controls button:disabled{opacity:.3;cursor:default}
+@keyframes story-glow{from{opacity:.75;transform:scale(.96)}to{opacity:1;transform:scale(1.05)}}
+.view.active.page-arrival{animation:everyday-page-in .28s cubic-bezier(.2,.76,.22,1) both}
+@keyframes everyday-page-in{from{opacity:.3;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.pet-extra{position:absolute;pointer-events:none;right:17%;top:14%;font-size:28px;opacity:0;z-index:4;transition:opacity .16s ease;filter:drop-shadow(0 0 8px #fadfb9)}
+.living-theater.pet-secret .pet-extra{opacity:1;animation:secret-lift 1.8s ease-in-out both}
+.living-theater.pet-secret .pet-stage{filter:drop-shadow(0 0 25px rgba(250,207,132,.6))}
+.living-theater.pet-calm .pet-stage img#pet-cutout{animation:pet-comfort .8s ease-in-out 2!important}
+@keyframes secret-lift{0%{opacity:0;transform:translateY(14px) rotate(-20deg)}23%,85%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(-14px) rotate(10deg)}}
+@keyframes pet-comfort{50%{filter:brightness(1.15) saturate(1.08)}}
+@media(max-width:720px){.everyday-shortcuts-row{grid-template-columns:1fr 1fr}.everyday-shortcut{padding:10px}.everyday-shortcut:nth-child(3){display:none}.everyday-shortcuts-title>span{font-size:9px}.everyday-insight{padding:12px 11px!important;gap:8px}.everyday-insight p{font-size:11px}.stories-launch{padding:8px;font-size:11px}.privacy-toggle{height:34px;width:34px}}
+@media(max-width:380px){.everyday-shortcuts-title>span{display:none}.everyday-insight p{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.view.active.page-arrival,.story-illustration,.living-theater.pet-secret .pet-extra,.living-theater.pet-calm .pet-stage img#pet-cutout{animation:none!important;transition:none!important}}

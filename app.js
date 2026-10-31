@@ -10,6 +10,10 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const copy=x=>JSON.parse(JSON.stringify(x)),newId=()=>crypto.randomUUID?crypto.randomUUID():[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join(''),bytes=s=>new TextEncoder().encode(s),b64=a=>btoa(String.fromCharCode(...a)),un64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const DEFAULT=()=>({version:5,initial:{card:0,cash:0,usdt:0,rub:0,usd:0},transactions:[],weeklyLimit:0,monthlyLimit:0,goals:[],recurring:[],wishlist:[],impulseGuard:true,impulseThreshold:200,meta:{}});
 let historyDay='',state=null,key=null,salt=null,guestMode=false,authMode='unlock',timer=null,currentPage='home',currentTheme='neobank',analysisPeriod=today().slice(0,7),installPrompt=null,quickKind='expense';
+const BALANCE_MASK_KEY='moi-dengi-mask-v30';
+let balancesHidden=false,seenAccountAmounts=null;
+try{balancesHidden=localStorage.getItem(BALANCE_MASK_KEY)==='1'}catch{}
+
 function toast(message){let el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast._id);toast._id=setTimeout(()=>el.classList.remove('show'),3800)}
 function finite(n,min=0,max=1e12){n=Number(n);if(!Number.isFinite(n)||n<min||n>max)throw Error('Некорректная сумма');return n}
 function validate(v){if(!v||typeof v!=='object'||!v.initial||!Array.isArray(v.transactions)||v.transactions.length>15000)throw Error('Файл не содержит корректных записей');const s=DEFAULT();
@@ -62,7 +66,7 @@ async function submitAuth(e){e.preventDefault();const p=$('auth-pass').value,but
 function lock(){state=null;key=null;salt=null;clearTimeout(timer);presentAuth('unlock')}
 function resetTimeout(){clearTimeout(timer);if(key)timer=setTimeout(lock,15*60*1000)}
 const pageLabels={home:['ЛИЧНЫЕ ФИНАНСЫ','Мои деньги'],transactions:['ОПЕРАЦИИ','История'],plans:['НАКОПЛЕНИЯ','Цели и платежи'],analytics:['ОТЧЁТЫ','Аналитика'],settings:['ЕЩЁ','Настройки']};
-function goto(page){if(!pageLabels[page])return;currentPage=page;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${page}`));$$('[data-page-link]').forEach(b=>b.classList.toggle('active',b.dataset.pageLink===page));$('page-title').textContent=pageLabels[page][1];$('page-eyebrow').textContent=pageLabels[page][0];if(page==='settings')renderSettings();if(page==='analytics')renderAnalytics();if(page==='transactions')renderHistory();window.scrollTo({top:0,behavior:'instant'})}
+function goto(page){if(!pageLabels[page])return;const changed=currentPage!==page;currentPage=page;$$('.view').forEach(v=>{const active=v.id===`view-${page}`;if(active&&changed){v.classList.remove('page-arrival');void v.offsetWidth;v.classList.add('page-arrival')}v.classList.toggle('active',active)});$$('[data-page-link]').forEach(b=>b.classList.toggle('active',b.dataset.pageLink===page));$('page-title').textContent=pageLabels[page][1];$('page-eyebrow').textContent=pageLabels[page][0];if(page==='settings')renderSettings();if(page==='analytics')renderAnalytics();if(page==='transactions')renderHistory();window.scrollTo({top:0,behavior:'instant'})}
 function sumExpenses(month,kind='expense'){return state.transactions.filter(t=>t.kind===kind&&t.date.startsWith(month)&&['card','cash'].includes(t.account)).reduce((n,t)=>n+t.amount,0)}
 function weekDates(offset=0){let d=new Date(today()+'T12:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7+offset*7);const start=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');d.setDate(d.getDate()+6);const end=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');return [start,end]}
 function weekSpent(){const [a,b]=weekDates();return state.transactions.filter(t=>t.kind==='expense'&&['card','cash'].includes(t.account)&&t.date>=a&&t.date<=b).reduce((n,t)=>n+t.amount,0)}
@@ -92,7 +96,7 @@ function offerPause(t){const isRup=['card','cash'].includes(t.account),threshold
 function openAccountDetail(code){if(!AC[code])return;const b=balances(),a=AC[code],labels={card:'Карта ПМР',cash:'Наличные ПМР',usdt:'Криптокошелёк',usd:'Доллары',rub:'Российские рубли'};
  const related=[...state.transactions].filter(t=>t.kind==='transfer'?(t.from===code||t.to===code):t.account===code).sort(sortRecent).slice(0,3);
  const recent=related.length?related.map(t=>`<div class="premium-detail-line"><span>${esc(t.kind==='transfer'?'Перевод':t.category)}<small>${t.date}</small></span><b>${t.kind==='transfer'?fmt(t.out)+' '+AC[t.from].unit:(t.kind==='expense'?'−':'+')+fmt(t.amount)+' '+a.unit}</b></div>`).join(''):'<p class="muted tiny">Пока нет операций по этому счёту.</p>';
- modal(labels[code],`<div class="premium-detail-balance"><span>Доступно</span><strong>${fmt(b[code],code==='usdt'?4:2)} <small>${a.unit}</small></strong></div><div class="premium-detail-actions"><button id="account-spend" class="btn primary" type="button">− Расход</button><button id="account-income" class="btn outline" type="button">＋ Доход</button><button id="account-transfer" class="btn outline" type="button">⇄ Перевод</button></div><h3 class="premium-detail-heading">Последние операции</h3>${recent}`,'СЧЁТ');
+ modal(labels[code],`<div class="premium-detail-balance"><span>Доступно</span><strong>${balancesHidden?'••••':fmt(b[code],code==='usdt'?4:2)} <small>${balancesHidden?'':a.unit}</small></strong></div><div class="premium-detail-actions"><button id="account-spend" class="btn primary" type="button">− Расход</button><button id="account-income" class="btn outline" type="button">＋ Доход</button><button id="account-transfer" class="btn outline" type="button">⇄ Перевод</button></div><h3 class="premium-detail-heading">Последние операции</h3>${recent}`,'СЧЁТ');
  $('account-spend').onclick=()=>openTx('expense',{account:code});$('account-income').onclick=()=>openTx('income',{account:code});$('account-transfer').onclick=()=>openTx('transfer',{account:code});
 }
 function renderLivingInsights(){
@@ -122,16 +126,125 @@ function smartCategories(){const common=['Продукты','Доставка е
 }
 function lastRepeatable(){if(!state)return null;return [...state.transactions].filter(t=>t.kind==='expense'&&!t.historical).sort(sortRecent)[0]||null}
 function flashSaved(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const el=$('account-grid');if(!el)return;el.classList.remove('just-saved');void el.offsetWidth;el.classList.add('just-saved');setTimeout(()=>el.classList.remove('just-saved'),860)}
+// ========== Everyday 3.0: UI preferences and finance-first delight ==========
+function updatePrivacyButton(){
+ const btn=$('privacy-toggle');if(!btn)return;
+ btn.classList.toggle('masked',balancesHidden);
+ btn.setAttribute('aria-pressed',String(balancesHidden));
+ btn.setAttribute('aria-label',balancesHidden?'Показать суммы счетов':'Скрыть суммы счетов');
+ btn.title=balancesHidden?'Показать балансы':'Скрыть балансы';
+}
+function togglePrivacy(){
+ balancesHidden=!balancesHidden;
+ try{localStorage.setItem(BALANCE_MASK_KEY,balancesHidden?'1':'0')}catch{}
+ // Re-render so raw amounts aren't present inside masked account tiles or accessibility labels.
+ renderHome();
+ toast(balancesHidden?'Балансы скрыты на экране':'Балансы показаны');
+}
+function animateAccountAmounts(next){
+ const previous=seenAccountAmounts;seenAccountAmounts={...next};
+ if(!previous||balancesHidden||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ for(const account of ['card','cash','usdt','usd']){
+  const from=previous[account],to=next[account];if(Math.abs(from-to)<1e-8)continue;
+  const node=$('account-grid').querySelector(`[data-account-open="${account}"] .pa-number`);
+  if(!node)continue;
+  const precision=account==='usdt'?4:2;
+  const began=performance.now();const duration=480;
+  function frame(at){if(balancesHidden||!node.isConnected)return;
+   const t=Math.min(1,(at-began)/duration),ease=1-Math.pow(1-t,3);
+   node.textContent=fmt(from+(to-from)*ease,precision);
+   if(t<1)requestAnimationFrame(frame);else node.textContent=fmt(to,precision);
+  }
+  requestAnimationFrame(frame);
+ }
+}
+function frequentlyBought(){
+ // Never count archival records or transfers, and don't infer amounts from other accounts.
+ const recents=state.transactions.filter(t=>t.kind==='expense'&&!t.historical&&t.date>=daysAgo(90))
+  .sort(sortRecent).slice(0,300);
+ const grouped=new Map();
+ for(const t of recents){
+  const key=[t.account,t.category,Number(t.amount).toFixed(2)].join('|');
+  if(!grouped.has(key))grouped.set(key,{account:t.account,category:t.category,amount:t.amount,note:t.note,count:0,last:t.date});
+  const item=grouped.get(key);item.count++;
+ }
+ return [...grouped.values()].sort((a,b)=>b.count-a.count||b.last.localeCompare(a.last)).slice(0,3);
+}
+function daysAgo(days){const d=new Date(today()+'T12:00:00');d.setDate(d.getDate()-days);return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function renderEverydayShortcuts(){
+ const root=$('everyday-shortcuts');if(!root)return;
+ const items=frequentlyBought();root.replaceChildren();root.classList.toggle('hidden',items.length===0);
+ if(!items.length)return;
+ const head=document.createElement('div');head.className='everyday-shortcuts-title';head.innerHTML='<strong>Быстрые покупки</strong><span>Подтверждение перед списанием</span>';root.append(head);
+ const row=document.createElement('div');row.className='everyday-shortcuts-row';
+ items.forEach(item=>{
+  const b=document.createElement('button');b.type='button';b.className='everyday-shortcut';
+  b.innerHTML=`<span class="shortcut-icon">${esc(ICONS[item.category]||'◈')}</span><span class="shortcut-label"><strong>${esc(item.category)}</strong><small>${fmt(item.amount)} ${AC[item.account].unit}</small></span><span class="shortcut-plus" aria-hidden="true">＋</span>`;
+  b.setAttribute('aria-label',`Повторить покупку: ${item.category} ${fmt(item.amount)} ${AC[item.account].unit} с подтверждением`);
+  b.onclick=()=>confirmRepeat(item);row.append(b);
+ });root.append(row);
+}
+function confirmRepeat(item){
+ modal('Повторить покупку?',`<div class="everyday-confirm"><div class="shortcut-confirm-icon">${esc(ICONS[item.category]||'◈')}</div><h3>${esc(item.category)}</h3><div class="repeat-amount">${fmt(item.amount)} <small>${AC[item.account].unit}</small></div><p class="muted">Счёт: ${esc(AC[item.account].label)}. Деньги спишутся только после подтверждения.</p></div><div class="button-row"><button id="repeat-confirm" type="button" class="btn primary">Записать расход</button><button id="repeat-edit" type="button" class="btn outline">Изменить</button><button id="repeat-cancel" type="button" class="btn ghost">Отмена</button></div>`,'БЫСТРАЯ ПОКУПКА');
+ $('repeat-confirm').onclick=async()=>{
+  const btn=$('repeat-confirm');btn.disabled=true;
+  const transaction={id:newId(),kind:'expense',date:today(),account:item.account,amount:item.amount,category:item.category,note:item.note||'',historical:false};
+  if(await change(()=>state.transactions.push(transaction),'Покупка записана')){closeModal();flashSaved()}else btn.disabled=false;
+ };
+ $('repeat-edit').onclick=()=>openTx('expense',{account:item.account,category:item.category,amount:item.amount,note:item.note||''});
+ $('repeat-cancel').onclick=closeModal;
+}
+function weekRupRows(offset=0){
+ const [start,end]=weekDates(offset);
+ return state.transactions.filter(t=>t.kind==='expense'&&['card','cash'].includes(t.account)&&t.date>=start&&t.date<=end);
+}
+function renderEverydayInsight(){
+ const elem=$('everyday-insight-text');if(!elem)return;
+ const rows=weekRupRows(),spent=rows.reduce((n,t)=>n+t.amount,0),budget=state.weeklyLimit;
+ if(!rows.length){elem.textContent='Запиши первую покупку — здесь появится наблюдение по твоим расходам.';return}
+ const byCategory=new Map();rows.forEach(t=>byCategory.set(t.category,(byCategory.get(t.category)||0)+t.amount));
+ const [name,value]=[...byCategory].sort((a,b)=>b[1]-a[1])[0];
+ const percent=Math.round(value/spent*100);
+ if(budget>0&&spent>budget){elem.textContent=`За эту неделю записано ${fmt(spent)} RUP при плане ${fmt(budget)} RUP. Лимит — ориентир, не запрет.`}
+ else if(budget>0&&budget-spent<budget*.2){elem.textContent=`По недельному плану осталось ${fmt(Math.max(0,budget-spent))} RUP. Крупнейшая категория — ${name}.`}
+ else{elem.textContent=`На «${name}» пришлось ${percent}% расходов этой недели (${fmt(value)} из ${fmt(spent)} RUP).`}
+}
+function openStories(){
+ const now=weekRupRows(),prev=weekRupRows(-1);
+ const weekTotal=now.reduce((s,t)=>s+t.amount,0),prevTotal=prev.reduce((s,t)=>s+t.amount,0);
+ const categories=new Map();now.forEach(t=>categories.set(t.category,(categories.get(t.category)||0)+t.amount));
+ const top=[...categories.entries()].sort((a,b)=>b[1]-a[1])[0];
+ const [weekStart,weekEnd]=weekDates(),slides=[
+  {eyebrow:'01 / 03 · ОБЗОР НЕДЕЛИ',title:'Расходы за неделю',big:fmt(weekTotal)+' RUP',description:`${weekStart.split('-').reverse().join('.')} — ${weekEnd.split('-').reverse().join('.')} · карта и наличные`,accent:'gold'},
+  {eyebrow:'02 / 03 · КАТЕГОРИИ',title:'Главная категория',big:top?top[0]:'Пока нет покупок',description:top?`${fmt(top[1])} RUP · ${Math.round(top[1]/weekTotal*100)}% расходов этой недели`:'Добавь расход, чтобы видеть распределение.',accent:'green'},
+  {eyebrow:'03 / 03 · СРАВНЕНИЕ',title:'Относительно прошлой недели',big:prevTotal?(weekTotal-prevTotal>=0?'+':'−')+fmt(Math.abs(weekTotal-prevTotal))+' RUP':'Нет данных',description:prevTotal?`Текущая неделя ещё идёт. За прошлую полную неделю было ${fmt(prevTotal)} RUP.`:'Для сравнения нужны расходы за прошлую неделю.',accent:'blue'}
+ ];
+ let current=0;
+ const markup='<div class="everyday-story"><div class="story-progress" id="story-progress" aria-hidden="true"><i></i><i></i><i></i></div><div class="story-inner"><span class="eyebrow" id="story-number"></span><div class="story-illustration" id="story-visual" aria-hidden="true">✧</div><h3 id="story-title"></h3><div class="story-big" id="story-big"></div><p id="story-description"></p></div><div class="story-controls"><button class="btn outline" id="story-prev" type="button">← Назад</button><button class="btn primary" id="story-next" type="button">Дальше →</button></div></div>';
+ modal('Твоя неделя',markup,'ФИНАНСОВЫЕ ИТОГИ');
+ const update=()=>{const v=slides[current],root=$('modal-content');if(!root)return;
+  root.querySelector('.everyday-story').dataset.accent=v.accent;
+  $('story-number').textContent=v.eyebrow;$('story-title').textContent=v.title;
+  $('story-big').textContent=v.big;$('story-description').textContent=v.description;
+  $$('#story-progress i').forEach((node,i)=>node.classList.toggle('complete',i<=current));
+  $('story-prev').disabled=current===0;$('story-next').textContent=current===2?'Готово':'Дальше →';};
+ $('story-prev').onclick=()=>{current=Math.max(0,current-1);update()};
+ $('story-next').onclick=()=>{if(current===2){closeModal();return}current++;update()};
+ update();
+}
+// ========== End Everyday 3.0 ==========
+
 function renderHome(){const b=balances();$('hero-card').textContent=fmt(b.card);$('account-grid').replaceChildren();
  const accountNames={card:'Карта ПМР',cash:'Наличные',usdt:'USDT',usd:'USD'};
  const accountCodes={card:'PMR · карта',cash:'PMR · наличные',usdt:'Цифровые активы',usd:'Резерв в долларах'};
  const accountGlyphs={card:'▤',cash:'◉',usdt:'₮',usd:'$'};
  for(const ac of ['card','cash','usdt','usd']){
   const tile=document.createElement('button');tile.type='button';tile.className='premium-account premium-account-'+ac;tile.dataset.accountOpen=ac;
-  tile.setAttribute('aria-label',`Открыть счёт ${accountNames[ac]}, баланс ${fmt(b[ac],ac==='usdt'?4:2)} ${AC[ac].unit}`);
-  tile.innerHTML=`<div class="pa-top"><span class="pa-name">${accountNames[ac]}</span><span class="pa-symbol">${accountGlyphs[ac]}</span></div><strong class="pa-value">${fmt(b[ac],ac==='usdt'?4:2)}<small>${AC[ac].unit}</small></strong><div class="pa-bottom"><span>${accountCodes[ac]}</span><span class="pa-arrow">↗</span></div>`;
+  tile.setAttribute('aria-label',balancesHidden?`Открыть счёт ${accountNames[ac]}. Сумма скрыта`:`Открыть счёт ${accountNames[ac]}, баланс ${fmt(b[ac],ac==='usdt'?4:2)} ${AC[ac].unit}`);
+  tile.innerHTML=`<div class="pa-top"><span class="pa-name">${accountNames[ac]}</span><span class="pa-symbol">${accountGlyphs[ac]}</span></div><strong class="pa-value"><span class="pa-number">${balancesHidden?'••••':fmt(b[ac],ac==='usdt'?4:2)}</span><small>${balancesHidden?'':AC[ac].unit}</small></strong><div class="pa-bottom"><span>${accountCodes[ac]}</span><span class="pa-arrow">↗</span></div>`;
   $('account-grid').append(tile);
  }
+updatePrivacyButton();animateAccountAmounts(b);renderEverydayShortcuts();renderEverydayInsight();
 const spent=weekSpent(),limit=state.weeklyLimit,remain=limit-spent;$('week-left').textContent=limit?fmt(Math.max(0,remain))+' RUP':'—';$('week-title').textContent=limit?'Осталось до конца недели':'Добавь лимит, чтобы отслеживать траты';$('week-used').textContent='Потрачено: '+fmt(spent);$('week-cap').textContent=limit?'Лимит: '+fmt(limit):'Лимит не задан';$('week-bar').style.width=(limit?Math.min(100,spent/limit*100):0)+'%';$('week-bar').classList.toggle('bad',limit>0&&spent>limit);const badge=$('week-status');badge.textContent=limit?(spent>limit?'Превышен':'В норме'):'Без лимита';badge.className='status '+(!limit?'neutral':spent>limit?'bad':'good');const mSpent=sumExpenses(today().slice(0,7));$('month-budget').textContent=state.monthlyLimit?'За месяц: '+fmt(mSpent)+' из '+fmt(state.monthlyLimit)+' RUP'+(mSpent>state.monthlyLimit?' · лимит превышен':''):'За месяц потрачено: '+fmt(mSpent)+' RUP';renderDaily(spent,limit);updateMascot(spent,limit);renderLivingInsights();showWelcome();renderTxList('recent-list',[...state.transactions].sort(sortRecent).slice(0,4),false);
  $('home-goals').innerHTML=state.goals.length?state.goals.slice(0,2).map(g=>`<div class="goal-preview"><div class="top"><strong>${esc(g.name)}</strong><span>${Math.round(Math.min(100,g.saved/g.target*100))}%</span></div><div class="micro-progress"><div style="width:${Math.min(100,g.saved/g.target*100)}%"></div></div><p class="tiny muted" style="margin-top:5px">${fmt(g.saved)} / ${fmt(g.target)} ${esc(g.unit)}</p></div>`).join(''):'<div class="empty">Пока нет целей. Добавь первую — например, накопить на свою идею.</div>';
  renderCategoryBars('home-categories',today().slice(0,7),3)}
@@ -209,11 +322,11 @@ async function importData(file){if(!file)return;try{if(file.size>6e6)throw Error
 async function changePassword(){const current=prompt('Текущий пароль');if(current===null)return;try{await unseal(JSON.parse(localStorage.getItem(STORE)),current)}catch(e){toast('Неверный текущий пароль');return}const next=prompt('Новый пароль (минимум 8 символов)');if(next===null)return;if(next.length<8){toast('Слишком короткий пароль');return}if(next!==prompt('Повтори новый пароль')){toast('Пароли не совпадают');return}try{const s=crypto.getRandomValues(new Uint8Array(16)),k=await derive(next,s);localStorage.setItem(STORE,JSON.stringify(await seal(state,k,s)));salt=s;key=k;toast('Пароль изменён — создай новую копию')}catch(e){toast('Не удалось сменить пароль')}}
 function resetData(){if(!confirm('Удалить ВСЕ данные на этом устройстве?'))return;if(!confirm('Это окончательное действие, если у тебя нет резервной копии. Удалить?'))return;localStorage.removeItem(guestMode?GUEST:STORE);state=null;key=null;salt=null;guestMode=true;openGuest();toast('Локальные данные удалены')}
 function installHelp(){if(installPrompt){installPrompt.prompt();installPrompt.userChoice.then(c=>{if(c.outcome==='accepted')toast('Установка начата');installPrompt=null})}else{const apple=/iPhone|iPad|iPod/.test(navigator.userAgent);toast(apple?'На iPhone: Safari → Поделиться → На экран «Домой»':'В браузере открой меню ⋮ → «Установить приложение» или «Добавить на главный экран»');$('install-hint').textContent=apple?'iPhone: открой сайт в Safari → Поделиться → На экран «Домой».':'Chrome/Edge: меню браузера → Установить приложение. Для офлайна нужен первый успешный визит.'}}
-function attach(){ $('auth-form').onsubmit=submitAuth;$('auth-guest').onclick=()=>{if(authMode==='protect'){showApp()}else try{openGuest()}catch(e){$('auth-error').textContent=e.message}};
+function attach(){ $('privacy-toggle').onclick=togglePrivacy;$('stories-open').onclick=openStories;$('stories-analytics').onclick=openStories; $('auth-form').onsubmit=submitAuth;$('auth-guest').onclick=()=>{if(authMode==='protect'){showApp()}else try{openGuest()}catch(e){$('auth-error').textContent=e.message}};
  $$('[data-page-link]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.pageLink)));$('account-grid').addEventListener('click',e=>{const tile=e.target.closest('[data-account-open]');if(tile)openAccountDetail(tile.dataset.accountOpen)});$('quick-top').onclick=()=>openTx();$$('[data-fast-category]').forEach(b=>b.onclick=()=>openTx('expense',{category:b.dataset.fastCategory}));$('welcome-start').onclick=()=>openTx('expense');$('welcome-dismiss').onclick=()=>{try{localStorage.setItem('moi-dengi-intro-v23','yes')}catch{}$('welcome-nudge').classList.add('hidden')};$('mobile-quick').onclick=()=>openTx();$('hero-spend').onclick=()=>openTx('expense');$('hero-income').onclick=()=>openTx('income');$('hero-transfer').onclick=()=>openTx('transfer');$('world-add-expense').onclick=()=>openTx('expense');$('world-add-income').onclick=()=>openTx('income');$('tx-add').onclick=()=>openTx();$('modal-close').onclick=closeModal;document.querySelector('[data-close="modal"]')?.addEventListener('click',closeModal);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});$('tx-search').oninput=renderHistory;$('tx-type').onchange=renderHistory;$('tx-month').onchange=renderHistory;$('tx-clear').onclick=()=>{historyDay='';$('tx-search').value='';$('tx-type').value='all';$('tx-month').value='';renderHistory()};$('calendar-clear').onclick=()=>{historyDay='';renderHistory()};$('tx-month').onchange=()=>{historyDay='';renderHistory()};$('goal-create').onclick=()=>openGoalEditor();$('rec-create').onclick=openRecurring;$('analysis-month').onchange=()=>{analysisPeriod=$('analysis-month').value;renderAnalytics()};$$('[data-theme-choice]').forEach(b=>b.onclick=()=>{setTheme(b.dataset.themeChoice);toast('Тема изменена: '+({'premium':'Premium Dark','neobank':'NeoBank Dark','minimal':'Graphite','focus':'Budget Focus','capy':'Warm Studio'}[b.dataset.themeChoice]||'Тема'))});$('save-balances').onclick=saveBalances;$('save-limits').onclick=saveLimits;$('save-impulse').onclick=saveImpulsePrefs;$('export-json').onclick=backup;$('export-csv').onclick=exportCsv;$('import-json').onclick=()=>$('file-import').click();$('file-import').onchange=async e=>{await importData(e.target.files?.[0]);e.target.value=''};$('protect-data').onclick=()=>presentAuth('protect');$('lock-data').onclick=lock;$('change-password').onclick=changePassword;$('reset-data').onclick=resetData;$('install-btn').onclick=installHelp;$('sidebar-install').onclick=installHelp;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e});window.addEventListener('appinstalled',()=>toast('Приложение установлено'));
  for(const event of ['pointerdown','keydown'])document.addEventListener(event,()=>{if(key)resetTimeout()},{passive:true});window.addEventListener('pagehide',()=>{if(key)resetTimeout()})}
 // -------- Auto Update 2.3.1 --------
-const APP_RELEASE='2.9.0';
+const APP_RELEASE='3.0.0';
 let updateCheckActive=false,updatePending=false,updateReloading=false;
 function updateSafeToReload(){
   const modal=$('modal');
