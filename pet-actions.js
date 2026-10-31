@@ -1,18 +1,32 @@
-/* Premium Worlds 2.6 — lightweight reactive illustration, no WebGL, no network requests. */
+/* Premium Living 2.7 — tactile reactions; no sounds without direct interaction. */
 (()=>{'use strict';
- const $=s=>document.getElementById(s);
- const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- const saved=()=>{try{return localStorage.getItem('moi-dengi-pet-sound-v26')!=='off'}catch{return true}};
- let kind='capybara', motion=!reduced.matches, busy=false, mood='calm',audio=null;
- const soundControl=()=>{const s=$('pet-sound-enabled');if(s){s.checked=saved();s.addEventListener('change',()=>{try{localStorage.setItem('moi-dengi-pet-sound-v26',s.checked?'on':'off')}catch{}})}};
- function petImage(){const image=$('pet-cutout'); if(!image)return;image.src=kind==='capybara'?'./capybara.png':'./dachshund.png';image.alt=kind==='capybara'?'Капибара с чашкой кофе и короной':'Радостная такса в тёмном худи';}
- function setPet(next){kind=next==='dachshund'?'dachshund':'capybara';document.documentElement.dataset.pet=kind;petImage();const stage=$('living-theater');if(stage)stage.dataset.pet=kind;const phrase=$('mascot-say');if(phrase)phrase.textContent=kind==='capybara'?'Нажми на меня — выпьем кофе ☕':'Нажми на меня — поздороваюсь 🐾';}
- function celebrate(){const stage=$('living-theater');if(!stage||reduced.matches)return;const bits=document.createElement('div');bits.className='pet-celebration';bits.setAttribute('aria-hidden','true');for(let i=0;i<12;i++){let z=document.createElement('i');z.style.setProperty('--x',((i*89)%300-150)+'px');z.style.setProperty('--d',(i%4)*.08+'s');bits.append(z)}stage.append(bits);setTimeout(()=>bits.remove(),1550)}
- function playBark(){if(!saved())return;try{if(!audio){audio=new Audio('./bark.wav');audio.preload='auto';audio.volume=.32}audio.currentTime=0;const promise=audio.play();promise?.catch?.(()=>{});}catch{}}
- function react(){if(busy)return;const stage=$('living-theater'),pet=$('pet-tap');if(!stage||!pet)return;busy=true;const action=kind==='capybara'?'sipping':'barking';stage.classList.remove('sipping','barking');void stage.offsetWidth;stage.classList.add(action);const caption=$('mascot-say');if(caption)caption.textContent=kind==='capybara'?'М-м, вот это хороший момент ☕':'Гав! У тебя всё получится 🐾';if(kind==='dachshund')playBark();if(!reduced.matches)celebrate();setTimeout(()=>{stage.classList.remove(action);const caption=$('mascot-say');if(caption)caption.textContent=kind==='capybara'?'Маленькие шаги. Большой результат.':'Сегодня отличный день для твоих целей.';busy=false},1750)}
- function init({pet,motion:enabled}={}){motion=!!enabled&&!reduced.matches;setPet(pet);const tap=$('pet-tap');if(tap&&!tap.dataset.bound){tap.dataset.bound='1';tap.addEventListener('click',react)}soundControl();document.documentElement.classList.toggle('pet-motion-off',!motion)}
- function switchPet(p){const stage=$('living-theater');if(stage)stage.classList.remove('sipping','barking');setPet(p)}
- function setMotion(value){motion=!!value&&!reduced.matches;document.documentElement.classList.toggle('pet-motion-off',!motion)}
- function setMood(value){mood=value;const stage=$('living-theater');if(stage)stage.dataset.mood=value}
- window.MoneyMascot={init,switchPet,setMotion,setMood,react};
+ const $=id=>document.getElementById(id),reduce=matchMedia('(prefers-reduced-motion: reduce)');
+ const AUDIO_KEY='moi-dengi-pet-sound-v26';let kind='capybara',motion=!reduce.matches,busy=false,mood='calm',audio={};
+ const sounds=()=>{try{return localStorage.getItem(AUDIO_KEY)!=='off'}catch{return true}};
+ function play(name){if(!sounds())return;try{if(!audio[name]){audio[name]=new Audio('./'+name+'.wav');audio[name].preload='auto';audio[name].volume=name==='bark'?0.43:0.36;}audio[name].pause();audio[name].currentTime=0;audio[name].play()?.catch(()=>{});}catch{}}
+ function say(text){const el=$('mascot-say');if(el)el.textContent=text}
+ function setPet(p){kind=p==='dachshund'?'dachshund':'capybara';document.documentElement.dataset.pet=kind;
+  const stage=$('living-theater');if(stage){stage.dataset.pet=kind;stage.classList.remove('pet-sip','pet-greet','pet-happy','pet-idle-react')}
+  const image=$('pet-cutout');if(image){image.src=kind==='capybara'?'./capybara.png':'./dachshund-body.png';const tail=$('pet-tail');if(tail)tail.classList.toggle('hidden',kind!=='dachshund');image.alt=kind==='capybara'?'Капибара в короне с чашкой кофе':'Такса в чёрном худи'}
+  say(kind==='capybara'?'Коснись чашки — сделаем паузу ☕':'Погладь таксу — она поздоровается 🐾');
+ }
+ function clean(){const stage=$('living-theater');stage?.classList.remove('pet-sip','pet-greet','pet-happy','pet-idle-react')}
+ function fire(type,duration=2100){const stage=$('living-theater');if(!stage||busy)return false;busy=true;clean();void stage.offsetHeight;stage.classList.add(type);
+  setTimeout(()=>{stage.classList.remove(type);busy=false},duration);return true}
+ function react(){if(kind==='capybara'){if(!fire('pet-sip',2200))return;play('sip');say('Тёплый кофе и немного спокойствия. ☕')}
+  else{if(!fire('pet-greet',1850))return;play('bark');say('Гав! Рада тебя видеть! 🐾')}
+  setTimeout(()=>{if(!busy)say(kind==='capybara'?'Маленькие шаги. Большой результат.':'Пойдём к твоим целям вместе.')},2400)
+ }
+ function celebrateIncome(){if(fire('pet-happy',1600))say(kind==='capybara'?'Хорошие новости! ☕':'Ура, пополнение! 🐾')}
+ function celebrateGoal(){if(fire('pet-happy',2100))say('Поздравляю с достигнутой целью! ✨')}
+ function init({pet='capybara',motion:active=true}={}){motion=!!active&&!reduce.matches;setPet(pet);document.documentElement.classList.toggle('pet-motion-off',!motion);
+  const button=$('pet-tap');if(button&&!button.dataset.mascotListener){button.addEventListener('click',react);button.dataset.mascotListener='yes'}
+  const input=$('pet-sound-enabled');if(input&&!input.dataset.mascotListener){input.checked=sounds();input.addEventListener('change',()=>{try{localStorage.setItem(AUDIO_KEY,input.checked?'on':'off')}catch{}});input.dataset.mascotListener='yes';}
+ }
+ function setMotion(active){motion=!!active&&!reduce.matches;document.documentElement.classList.toggle('pet-motion-off',!motion)}
+ function setMood(m){mood=m;const el=$('living-theater');if(el)el.dataset.mood=m}
+ // Gentle expressive idle every 25–38 seconds when foregrounded; no autoplay sound.
+ function idle(){if(document.hidden||busy||reduce.matches||!motion)return;fire('pet-idle-react',900)}
+ setInterval(idle,32000);
+ window.MoneyMascot={init,switchPet:setPet,setMotion,setMood,react,celebrateIncome,celebrateGoal};
 })();
