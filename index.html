@@ -29,14 +29,15 @@
       <div id="confirm-field" class="field"><label for="auth-confirm">Повтори пароль</label><input type="password" id="auth-confirm" autocomplete="new-password" minlength="8" placeholder="Повтори пароль"></div>
       <button id="auth-submit" class="btn btn-primary btn-full" type="submit">Создать защищённое хранилище</button>
     </form>
+    <button id="auth-guest" class="btn btn-full hidden" type="button">Продолжить без пароля</button>
     <div class="auth-error" id="auth-error" role="alert"></div>
     <div class="auth-foot">Шифрование AES-GCM на устройстве. Пароль не отправляется в GitHub. Если забудешь пароль и нет резервной копии — восстановить данные будет нельзя.</div>
   </div>
 </div>
 <div id="app" class="app hidden">
 <header class="header">
-  <div class="brand"><div class="brand-icon">₽</div><div><div class="brand-title">Мои деньги <span style="color:var(--muted2);font-size:11px;font-weight:500">2.0</span></div><div class="brand-sub">Личный финансовый трекер</div></div></div>
-  <div class="header-right"><button class="btn btn-sm desktop-only" id="settings-btn" type="button">⚙ Настройки</button><div class="privacy-pill"><span class="pill-dot"></span>Зашифровано локально</div><button id="lock-btn" class="btn btn-sm" type="button">⌁ Закрыть</button></div>
+  <div class="brand"><div class="brand-icon">₽</div><div><div class="brand-title">Мои деньги <span style="color:var(--muted2);font-size:11px;font-weight:500">2.1</span></div><div class="brand-sub">Личный финансовый трекер</div></div></div>
+  <div class="header-right"><button class="btn btn-sm desktop-only" id="settings-btn" type="button">⚙ Настройки</button><div class="privacy-pill"><span class="pill-dot"></span><span id="privacy-text">Локальные данные</span></div><button id="lock-btn" class="btn btn-sm" type="button">⌁ Закрыть</button></div>
 </header>
 <section class="top-stats" data-page="overview" aria-label="Текущие остатки">
   <article class="stat card-primary"><div class="stat-top">Агропромбанк <span class="stat-symbol">▣</span></div><div class="stat-number"><span id="bal-card">0</span><span class="stat-unit"> RUP</span></div><div class="stat-small">Доступно на карте</div></article>
@@ -73,15 +74,15 @@
   <section class="panel"><div class="panel-header"><h2 class="panel-heading">Текущие балансы</h2><span class="small-muted">Контрольная точка</span></div><div class="fields"><div><label for="initial-card">Карта, RUP</label><input id="initial-card" type="number" inputmode="decimal" min="0" step="any"></div><div><label for="initial-cash">Наличные, RUP</label><input id="initial-cash" type="number" inputmode="decimal" min="0" step="any"></div><div class="field-full"><label for="initial-usdt">USDT</label><input id="initial-usdt" type="number" inputmode="decimal" min="0" step="any"></div></div><div class="settings-buttons"><button id="set-balances" type="button" class="btn">Сохранить балансы</button></div><p class="setting-help">Здесь задаётся контрольный остаток с учётом уже записанных операций. Для новых покупок используй «Добавить». Наличные в файле импорта — последняя приблизительная оценка.</p></section>
   <section class="panel"><div class="panel-header"><h2 class="panel-heading">Бюджет</h2></div><div class="setting-row"><div><label for="weekly-limit">Лимит расходов на неделю, RUP</label><input id="weekly-limit" type="number" min="0" step="any" placeholder="Например 700"></div><button id="save-limit" type="button" class="btn">Сохранить</button></div><p class="setting-help">0 = без ограничения. Расходы в рублях учитываются и с карты, и наличными.</p></section>
   <section class="panel"><div class="panel-header"><h2 class="panel-heading">Данные и безопасность</h2></div>
-    <div class="info">🔒 Все операции хранятся только в этом браузере в зашифрованном виде. GitHub хранит только код. Данные не синхронизируются между телефоном и ноутбуком.</div>
+    <div id="privacy-info" class="info">Данные хранятся на устройстве и не синхронизируются автоматически.</div>
     <div class="settings-buttons"><button id="backup-btn" class="btn btn-primary" type="button">↓ Зашифрованная копия</button><button id="import-btn" class="btn" type="button">↑ Импорт JSON</button><button id="csv-btn" class="btn" type="button">↓ CSV для Excel</button><input type="file" id="import-file" accept=".json,application/json" class="hidden"></div>
-    <p class="setting-help">Резервная копия защищена паролем, действовавшим при её создании. CSV содержит незашифрованные операции — храни его осторожно. Импорт заменяет текущие данные после подтверждения.</p>
-    <hr class="hr"><div class="settings-buttons"><button id="change-password" type="button" class="btn">Сменить пароль</button><button id="reset-data" type="button" class="btn btn-danger">Удалить данные</button></div>
-    <p class="setting-help">Пароль защищает локальное хранилище, но не закрывает общедоступный сайт от других пользователей. Потерянный пароль восстановить невозможно.</p>
+    <p id="backup-help" class="setting-help">Резервная копия защищена паролем, действовавшим при её создании. CSV содержит незашифрованные операции — храни его осторожно. Импорт заменяет текущие данные после подтверждения.</p>
+    <hr class="hr"><div class="settings-buttons"><button id="enable-password" type="button" class="btn hidden">🔒 Защитить данные паролем</button><button id="change-password" type="button" class="btn">Сменить пароль</button><button id="reset-data" type="button" class="btn btn-danger">Удалить данные</button></div>
+    <p class="setting-help">Пароль не закрывает публичный сайт: другие люди могут вести собственный учёт в своих браузерах. На общем устройстве без пароля записи доступны другим пользователям этого браузера.</p>
     <p id="snapshot-hint" class="activity-log"></p>
   </section>
 </section>
-<div class="footer">Мои деньги · v2.0 · Данные на этом устройстве, без аккаунтов и сервера</div>
+<div class="footer">Мои деньги · v2.1 · Вход без пароля или с шифрованием · Без аккаунтов и сервера</div>
 </div>
 <nav id="mobile-nav" class="mobile-nav" aria-label="Разделы сайта">
   <button data-target="overview" class="active" type="button"><span class="nav-icon">⌂</span>Обзор</button>
@@ -92,7 +93,7 @@
 <div id="toast" role="status" aria-live="polite" class="toast"></div>
 <script>
 (()=>{'use strict';
-const STORE='moi-dengi-secure-v2',LEGACY='moi-dengi-web-v1',ITER=250000;
+const STORE='moi-dengi-secure-v2',GUEST='moi-dengi-guest-v1',LEGACY='moi-dengi-web-v1',ITER=250000;
 const AC={card:{label:'Карта',unit:'RUP'},cash:{label:'Наличные',unit:'RUP'},usdt:{label:'USDT',unit:'USDT'}};
 const CATS={expense:['Продукты','Доставка еды','Кафе и сладости','Транспорт','Здоровье','Связь','Коммунальные','Встречи и подарки','Покупки','Мелкие покупки','Другое'],income:['Зарплата','Возврат долга','Подарок','Прочий доход']};
 const DEFAULT=()=>({version:3,initial:{card:0,cash:0,usdt:0},transactions:[],weeklyLimit:0,meta:{}});
@@ -102,7 +103,7 @@ const iso=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1)
 const copy=x=>JSON.parse(JSON.stringify(x));
 const b64=u=>btoa(Array.from(u,x=>String.fromCharCode(x)).join(''));
 const un64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-let state=null,key=null,activeKind='expense',weekOffset=0,authMode='setup',timer=null,salt=null;
+let state=null,key=null,activeKind='expense',weekOffset=0,authMode='setup',timer=null,salt=null,guestMode=false;
 function toast(s){const el=$('toast');el.textContent=s;el.classList.add('show');clearTimeout(toast._id);toast._id=setTimeout(()=>el.classList.remove('show'),3800)}
 function bytes(s){return new TextEncoder().encode(s)}
 async function derive(password,s){const base=await crypto.subtle.importKey('raw',bytes(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:ITER,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
@@ -110,11 +111,65 @@ async function seal(obj,k,s){const iv=crypto.getRandomValues(new Uint8Array(12))
 async function unseal(blob,password){if(!blob||blob.format!=='moi-dengi-encrypted'||blob.iterations!==ITER||typeof blob.ciphertext!=='string')throw Error('Неподдерживаемая резервная копия');const s=un64(blob.salt),k=await derive(password,s);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:un64(blob.iv)},k,un64(blob.ciphertext));return {state:validate(JSON.parse(new TextDecoder().decode(pt))),key:k,salt:s}}
 function validate(v){if(!v||typeof v!=='object'||!v.initial||!Array.isArray(v.transactions)||v.transactions.length>15000)throw Error('Некорректный файл данных');const result=DEFAULT();for(const a of Object.keys(AC)){const n=Number(v.initial[a]||0);if(!Number.isFinite(n)||n<0||n>1e12)throw Error('Некорректный остаток');result.initial[a]=n}const w=Number(v.weeklyLimit||0);if(!Number.isFinite(w)||w<0||w>1e9)throw Error('Некорректный лимит');result.weeklyLimit=w;result.meta=(v.meta&&typeof v.meta==='object')?{snapshotDate:String(v.meta.snapshotDate||'').slice(0,20),snapshotNote:String(v.meta.snapshotNote||'').slice(0,340),cashUnverified:!!v.meta.cashUnverified}:{};const ids=new Set();for(const t of v.transactions){if(!t||!['expense','income','transfer'].includes(t.kind)||!/^(19|20)\d\d-\d\d-\d\d$/.test(t.date))throw Error('Некорректная запись');const row={id:String(t.id||crypto.randomUUID()).slice(0,100),kind:t.kind,date:t.date,note:String(t.note||'').slice(0,160),historical:!!t.historical};if(ids.has(row.id))row.id=crypto.randomUUID();ids.add(row.id);if(row.kind==='transfer'){if(!AC[t.from]||!AC[t.to]||t.from===t.to)throw Error('Некорректный перевод');row.from=t.from;row.to=t.to;row.out=Number(t.out);row.in=Number(t.in);if(!(row.out>0&&row.in>0&&row.out<=1e12&&row.in<=1e12))throw Error('Некорректная сумма перевода')}else{if(!AC[t.account])throw Error('Некорректный счёт');row.account=t.account;row.amount=Number(t.amount);row.category=String(t.category||'Другое').slice(0,70);if(!(row.amount>0&&row.amount<=1e12))throw Error('Некорректная сумма')}result.transactions.push(row)}return result}
 function balances(){const b={...state.initial};for(const t of state.transactions){if(t.historical)continue;if(t.kind==='transfer'){b[t.from]-=t.out;b[t.to]+=t.in}else b[t.account]+=t.kind==='income'?t.amount:-t.amount}return b}
-async function save(){if(!key||!salt||!state)throw Error('Хранилище закрыто');const encrypted=await seal(state,key,salt);localStorage.setItem(STORE,JSON.stringify(encrypted))}
-function presentAuth(mode){authMode=mode;document.body.dataset.view='overview';$('auth').classList.remove('hidden');$('app').classList.add('hidden');$('mobile-nav').classList.add('hidden');$('auth-error').textContent='';$('auth-pass').value='';$('auth-confirm').value='';const setup=mode==='setup';$('auth-heading').textContent=setup?'Защитить мои деньги':'Вход в мои деньги';$('auth-desc').textContent=setup?(localStorage.getItem(LEGACY)?'Найдены записи старой версии. Установи пароль: они будут перенесены и зашифрованы.':'Создай пароль для шифрования операций. Минимум 8 символов.'):'Введи пароль для расшифровки личных записей на этом устройстве.';$('confirm-field').classList.toggle('hidden',!setup);$('auth-submit').textContent=setup?'Создать защищённое хранилище':'Открыть трекер';$('auth-pass').autocomplete=setup?'new-password':'current-password';setTimeout(()=>$('auth-pass').focus(),50)}
-function showApp(){ $('auth').classList.add('hidden');$('app').classList.remove('hidden');$('mobile-nav').classList.remove('hidden');$('tx-date').value=iso();$('month-filter').value=iso().slice(0,7);setKind('expense');refreshInputs();render();goto('overview');resetTimeout()}
+async function save(){if(!state)throw Error('Хранилище закрыто');if(guestMode){localStorage.setItem(GUEST,JSON.stringify(state));return}if(!key||!salt)throw Error('Защищённое хранилище закрыто');const encrypted=await seal(state,key,salt);localStorage.setItem(STORE,JSON.stringify(encrypted))}
+function presentAuth(mode){
+  authMode=mode;document.body.dataset.view='overview';$('auth').classList.remove('hidden');$('app').classList.add('hidden');$('mobile-nav').classList.add('hidden');
+  $('auth-error').textContent='';$('auth-pass').value='';$('auth-confirm').value='';
+  const setup=mode!=='unlock',protectGuest=mode==='protect-guest';
+  $('auth-heading').textContent=setup?'Защитить личный учёт':'Вход в личный учёт';
+  $('auth-desc').textContent=protectGuest?'Сейчас данные сохраняются без шифрования. Создай пароль, чтобы защитить уже добавленные операции.':setup?(localStorage.getItem(LEGACY)?'Найдены записи старой версии. Создай пароль, чтобы безопасно перенести их.':'Пароль необязателен. Можно использовать трекер сразу либо защитить записи паролем.'):'Введите пароль от зашифрованных записей на этом устройстве.';
+  $('confirm-field').classList.toggle('hidden',!setup);
+  $('auth-submit').textContent=setup?'Защитить данные паролем':'Открыть трекер';
+  $('auth-guest').classList.toggle('hidden',!(protectGuest||(setup&&!localStorage.getItem(LEGACY))));
+  $('auth-guest').textContent=protectGuest?'← Вернуться без пароля':'Продолжить без пароля';
+  $('auth-pass').autocomplete=setup?'new-password':'current-password';
+  if(mode==='unlock')setTimeout(()=>$('auth-pass').focus(),50);
+}
+function showApp(){
+  $('auth').classList.add('hidden');$('app').classList.remove('hidden');$('mobile-nav').classList.remove('hidden');
+  $('lock-btn').classList.toggle('hidden',guestMode);$('enable-password').classList.toggle('hidden',!guestMode);
+  $('change-password').classList.toggle('hidden',guestMode);
+  $('privacy-text').textContent=guestMode?'Без пароля (на этом устройстве)':'Зашифровано локально';
+  $('privacy-info').textContent=guestMode?'Открытый режим: данные хранятся в этом браузере без шифрования, и любой с доступом к устройству может их увидеть. Включи пароль в настройках для защиты. Сайт общий, данные посетителей раздельные.':'Защищённый режим: записи зашифрованы паролем и хранятся только в этом браузере. Сайт общедоступный, но другие люди не увидят твой личный учёт.';
+  $('backup-btn').textContent=guestMode?'↓ Резервная копия JSON':'↓ Зашифрованная копия';
+  $('backup-help').textContent=guestMode?'В открытом режиме резервная копия JSON НЕ зашифрована. Не публикуй её и не отправляй посторонним. Импорт заменяет текущую историю после подтверждения.':'Резервная копия зашифрована текущим паролем. CSV не зашифрован. Импорт заменяет текущую историю после подтверждения.';
+  $('tx-date').value=iso();$('month-filter').value=iso().slice(0,7);setKind('expense');refreshInputs();render();goto('overview');resetTimeout();
+}
+function openGuest(){
+  // Never expose existing encrypted data: their presence always requires the owner's password.
+  if(localStorage.getItem(STORE))throw Error('Устройство уже содержит защищённый учёт');
+  const raw=localStorage.getItem(GUEST);
+  state=raw?validate(JSON.parse(raw)):DEFAULT();guestMode=true;key=null;salt=null;
+  showApp();
+}
 function convertLegacy(raw){const v=validate(raw);return {...v,version:3,meta:{snapshotNote:'Перенесено из предыдущей версии сайта'}}}
-async function submitAuth(e){e.preventDefault();const pass=$('auth-pass').value;const box=$('auth-error');box.textContent='';if(pass.length<8){box.textContent='Пароль должен содержать не меньше 8 символов';return}const btn=$('auth-submit');btn.disabled=true;try{if(authMode==='setup'){if(pass!==$('auth-confirm').value)throw Error('Пароли не совпадают');const raw=localStorage.getItem(LEGACY);let fromLegacy=DEFAULT();if(raw){try{fromLegacy=convertLegacy(JSON.parse(raw))}catch(err){throw Error('Не удалось прочитать старые записи. Сначала скачай JSON-копию из старой версии сайта.')}}salt=crypto.getRandomValues(new Uint8Array(16));key=await derive(pass,salt);state=fromLegacy;await save();if(raw)localStorage.removeItem(LEGACY);showApp();toast('Готово! Данные защищены паролем')}else{const val=JSON.parse(localStorage.getItem(STORE));const decoded=await unseal(val,pass);state=decoded.state;key=decoded.key;salt=decoded.salt;showApp();toast('Хранилище открыто')}}catch(err){box.textContent=authMode==='unlock'?'Неверный пароль или повреждены данные':(err.message||'Не удалось создать хранилище')}finally{btn.disabled=false;$('auth-pass').value='';$('auth-confirm').value=''}}
+async function submitAuth(e){
+  e.preventDefault();const pass=$('auth-pass').value;const box=$('auth-error');box.textContent='';
+  if(pass.length<8){box.textContent='Пароль должен содержать не меньше 8 символов';return}
+  const btn=$('auth-submit');btn.disabled=true;
+  try{
+    if(authMode==='setup'||authMode==='protect-guest'){
+      if(pass!==$('auth-confirm').value)throw Error('Пароли не совпадают');
+      const raw=authMode==='setup'?localStorage.getItem(LEGACY):null;
+      let nextState;
+      if(authMode==='protect-guest')nextState=validate(state);
+      else if(raw){try{nextState=convertLegacy(JSON.parse(raw))}catch(err){throw Error('Не удалось прочитать старые записи. Сначала сохрани копию старой версии.')}}
+      else nextState=DEFAULT();
+      const newSalt=crypto.getRandomValues(new Uint8Array(16)),newKey=await derive(pass,newSalt);
+      // Write encrypted data before deleting guest or legacy data.
+      localStorage.setItem(STORE,JSON.stringify(await seal(nextState,newKey,newSalt)));
+      state=nextState;salt=newSalt;key=newKey;guestMode=false;
+      if(raw)localStorage.removeItem(LEGACY);
+      localStorage.removeItem(GUEST);
+      showApp();toast('Данные теперь защищены паролем');
+    }else{
+      const val=JSON.parse(localStorage.getItem(STORE)),decoded=await unseal(val,pass);
+      state=decoded.state;key=decoded.key;salt=decoded.salt;guestMode=false;
+      showApp();toast('Хранилище открыто');
+    }
+  }catch(err){box.textContent=authMode==='unlock'?'Неверный пароль или повреждены данные':(err.message||'Не удалось защитить данные')}
+  finally{btn.disabled=false;$('auth-pass').value='';$('auth-confirm').value=''}
+}
 function lock(){state=null;key=null;salt=null;clearTimeout(timer);presentAuth('unlock')}
 function resetTimeout(){clearTimeout(timer);if(key)timer=setTimeout(lock,15*60*1000)}
 function goto(view){document.body.dataset.view=view;for(const b of document.querySelectorAll('#mobile-nav button'))b.classList.toggle('active',b.dataset.target===view);if(view==='settings')refreshInputs();if(view==='history')renderHistory();window.scrollTo({top:0,behavior:'instant'})}
@@ -136,12 +191,28 @@ async function saveLimit(){const n=Number($('weekly-limit').value||0);if(!Number
 function download(name,string,mime){const url=URL.createObjectURL(new Blob([string],{type:mime}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000)}
 function csvSafe(v){const s=String(v??'');const safe=/^[=+@\-\t\r]/.test(s)?"'"+s:s;return '"'+safe.replaceAll('"','""')+'"'}
 function exportCsv(){const header=['Дата','Тип','Категория','Счёт','Куда','Списано','Получено','Историческая запись','Примечание'];const rows=state.transactions.map(t=>t.kind==='transfer'?[t.date,'Перевод','',AC[t.from].label,AC[t.to].label,t.out,t.in,t.historical?'Да':'Нет',t.note]:[t.date,t.kind==='expense'?'Расход':'Доход',t.category,AC[t.account].label,'',t.amount,'',t.historical?'Да':'Нет',t.note]);download('moi-dengi-'+iso()+'.csv','\ufeff'+[header,...rows].map(x=>x.map(csvSafe).join(';')).join('\r\n'),'text/csv;charset=utf-8');toast('CSV скачан, он НЕ зашифрован')}
-async function backup(){const raw=localStorage.getItem(STORE);if(!raw){toast('Нет данных для резервной копии');return}download('moi-dengi-ENCRYPTED-'+iso()+'.json',raw,'application/json;charset=utf-8');toast('Зашифрованная резервная копия скачана')}
+async function backup(){
+  if(guestMode){download('moi-dengi-OPEN-'+iso()+'.json',JSON.stringify(state,null,2),'application/json;charset=utf-8');toast('Копия скачана: ВНИМАНИЕ, она не зашифрована');return}
+  const raw=localStorage.getItem(STORE);if(!raw){toast('Нет данных для резервной копии');return}
+  download('moi-dengi-ENCRYPTED-'+iso()+'.json',raw,'application/json;charset=utf-8');toast('Зашифрованная резервная копия скачана')
+}
 async function importData(file){if(!file)return;try{if(file.size>6e6)throw Error('Файл слишком большой');const val=JSON.parse(await file.text());let imported;if(val.format==='moi-dengi-encrypted'){const pass=prompt('Введите пароль от импортируемой зашифрованной копии');if(pass===null)return;imported=(await unseal(val,pass)).state}else imported=validate(val);if(!confirm('ВНИМАНИЕ: импорт ЗАМЕНИТ текущие операции и балансы. Сначала скачай зашифрованную резервную копию через «Настройки». Продолжить?'))return;const old=state;state=imported;try{await save();refreshInputs();render();toast('Импорт завершён, записи зашифрованы')}catch(e){state=old;throw e}}catch(e){toast('Импорт не удался: '+e.message)}}
 async function changePassword(){const old=prompt('Текущий пароль (не передавай его никому):');if(old===null)return;try{await unseal(JSON.parse(localStorage.getItem(STORE)),old)}catch(e){toast('Текущий пароль неверен');return}const next=prompt('Новый пароль (не меньше 8 символов):');if(next===null)return;if(next.length<8){toast('Слишком короткий пароль');return}const confirmPass=prompt('Повтори новый пароль:');if(next!==confirmPass){toast('Пароли не совпадают');return}try{const newSalt=crypto.getRandomValues(new Uint8Array(16));const newKey=await derive(next,newSalt);const blob=await seal(state,newKey,newSalt);localStorage.setItem(STORE,JSON.stringify(blob));key=newKey;salt=newSalt;toast('Пароль изменён. Создай новую резервную копию!')}catch(e){toast('Не удалось сменить пароль')}}
-function resetData(){if(!confirm('Удалить ВСЕ зашифрованные данные на этом устройстве? Без резервной копии их не восстановить.'))return;if(!confirm('Подтвердить окончательное удаление?'))return;localStorage.removeItem(STORE);state=null;key=null;salt=null;presentAuth('setup')}
-function bind(){ $('auth-form').addEventListener('submit',submitAuth);$('lock-btn').addEventListener('click',lock);$('settings-btn').addEventListener('click',()=>{const panel=$('settings');const shown=panel.classList.toggle('open');$('settings-btn').textContent=shown?'× Скрыть':'⚙ Настройки';if(shown){refreshInputs();panel.scrollIntoView({behavior:'smooth',block:'start'})}});for(const b of document.querySelectorAll('#mobile-nav button'))b.addEventListener('click',()=>goto(b.dataset.target));for(const b of document.querySelectorAll('#kind-tabs button'))b.addEventListener('click',()=>setKind(b.dataset.kind));$('tx-form').addEventListener('submit',addTx);$('week-prev').addEventListener('click',()=>{weekOffset--;renderWeek()});$('week-next').addEventListener('click',()=>{weekOffset++;renderWeek()});$('month-filter').addEventListener('change',renderMonth);$('history-search').addEventListener('input',renderHistory);$('history-all').addEventListener('click',()=>{$('history-search').value='';renderHistory()});$('tx-account').addEventListener('change',()=>{if(activeKind==='transfer'&&$('tx-account').value===$('tx-to').value){$('tx-to').value=$('tx-account').value==='card'?'cash':'card'}});$('set-balances').addEventListener('click',setBalance);$('save-limit').addEventListener('click',saveLimit);$('backup-btn').addEventListener('click',backup);$('csv-btn').addEventListener('click',exportCsv);$('import-btn').addEventListener('click',()=>$('import-file').click());$('import-file').addEventListener('change',async e=>{await importData(e.target.files?.[0]);e.target.value=''});$('change-password').addEventListener('click',changePassword);$('reset-data').addEventListener('click',resetData);for(const x of ['pointerdown','keydown'])document.addEventListener(x,()=>{if(key)resetTimeout()},{passive:true});window.addEventListener('pagehide',()=>{if(key)resetTimeout()})}
-async function init(){if(!window.crypto?.subtle||!window.isSecureContext){$('auth-desc').textContent='Для шифрования открой сайт по защищённому HTTPS-адресу GitHub Pages. В этом режиме браузер не поддерживает безопасное хранилище.';$('auth-submit').disabled=true;return}try{localStorage.setItem('__moi_test','1');localStorage.removeItem('__moi_test')}catch(e){$('auth-desc').textContent='Браузер запрещает локальное хранилище. Выключи приватный режим или разреши сохранение данных.';$('auth-submit').disabled=true;return}bind();presentAuth(localStorage.getItem(STORE)?'unlock':'setup')}
+function resetData(){
+  if(!confirm('Удалить ВСЕ данные трекера на этом устройстве? Без резервной копии их не восстановить.'))return;
+  if(!confirm('Подтвердить окончательное удаление?'))return;
+  if(guestMode){localStorage.removeItem(GUEST);state=DEFAULT();render();toast('Данные удалены');return}
+  localStorage.removeItem(STORE);state=null;key=null;salt=null;guestMode=false;openGuest();toast('Данные удалены')
+}
+function bind(){ $('auth-form').addEventListener('submit',submitAuth);$('auth-guest').addEventListener('click',()=>{if(authMode==='protect-guest')showApp();else try{openGuest()}catch(e){$('auth-error').textContent=e.message}});$('enable-password').addEventListener('click',()=>presentAuth('protect-guest'));$('lock-btn').addEventListener('click',lock);$('settings-btn').addEventListener('click',()=>{const panel=$('settings');const shown=panel.classList.toggle('open');$('settings-btn').textContent=shown?'× Скрыть':'⚙ Настройки';if(shown){refreshInputs();panel.scrollIntoView({behavior:'smooth',block:'start'})}});for(const b of document.querySelectorAll('#mobile-nav button'))b.addEventListener('click',()=>goto(b.dataset.target));for(const b of document.querySelectorAll('#kind-tabs button'))b.addEventListener('click',()=>setKind(b.dataset.kind));$('tx-form').addEventListener('submit',addTx);$('week-prev').addEventListener('click',()=>{weekOffset--;renderWeek()});$('week-next').addEventListener('click',()=>{weekOffset++;renderWeek()});$('month-filter').addEventListener('change',renderMonth);$('history-search').addEventListener('input',renderHistory);$('history-all').addEventListener('click',()=>{$('history-search').value='';renderHistory()});$('tx-account').addEventListener('change',()=>{if(activeKind==='transfer'&&$('tx-account').value===$('tx-to').value){$('tx-to').value=$('tx-account').value==='card'?'cash':'card'}});$('set-balances').addEventListener('click',setBalance);$('save-limit').addEventListener('click',saveLimit);$('backup-btn').addEventListener('click',backup);$('csv-btn').addEventListener('click',exportCsv);$('import-btn').addEventListener('click',()=>$('import-file').click());$('import-file').addEventListener('change',async e=>{await importData(e.target.files?.[0]);e.target.value=''});$('change-password').addEventListener('click',changePassword);$('reset-data').addEventListener('click',resetData);for(const x of ['pointerdown','keydown'])document.addEventListener(x,()=>{if(key)resetTimeout()},{passive:true});window.addEventListener('pagehide',()=>{if(key)resetTimeout()})}
+async function init(){
+  if(!window.crypto?.subtle||!window.isSecureContext){$('auth-desc').textContent='Для работы с защищёнными записями открой сайт по HTTPS. В этом браузере безопасное шифрование недоступно.';$('auth-submit').disabled=true;return}
+  try{localStorage.setItem('__moi_test','1');localStorage.removeItem('__moi_test')}catch(e){$('auth-desc').textContent='Браузер запрещает хранение данных. Открой сайт в обычном режиме и разреши локальное хранилище.';$('auth-submit').disabled=true;return}
+  bind();
+  if(localStorage.getItem(STORE))presentAuth('unlock');
+  else if(localStorage.getItem(LEGACY))presentAuth('setup');
+  else try{openGuest()}catch(e){presentAuth('setup');$('auth-error').textContent='Данные не удалось открыть: '+e.message}
+}
 init();
 })();
 </script>
