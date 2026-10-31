@@ -12,3 +12,54 @@ html[data-theme="focus"]{--bg:#071710;--panel:#10241b;--panel2:#1a3327;--border:
 @media(max-width:930px){.sidebar{display:none}.workspace{margin:0;padding:20px 18px 93px}.mobile-nav{display:flex;position:fixed;z-index:20;bottom:0;left:0;right:0;height:calc(67px + env(safe-area-inset-bottom));padding:5px 10px calc(5px + env(safe-area-inset-bottom));align-items:center;justify-content:space-around;background:color-mix(in srgb,var(--panel) 96%,transparent);border-top:1px solid var(--border);backdrop-filter:blur(20px)}.mobile-nav button{flex:1;border:0;background:transparent;color:var(--sub);font-size:10px;font-weight:700;display:grid;justify-items:center;gap:0}.mobile-nav button>span{font-size:24px;line-height:1.2}.mobile-nav button.active{color:var(--accent)}.mobile-nav .mobile-add{flex:0 0 56px}.mobile-nav .mobile-add>span{background:var(--accent);width:44px;height:44px;border-radius:15px;color:var(--accent-ink);display:grid;place-items:center;font-size:30px;box-shadow:0 4px 15px color-mix(in srgb,var(--accent) 28%,transparent)}.settings-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){.workspace{padding:18px 13px 94px}.topbar{margin-bottom:17px}.topbar h1{font-size:25px}.topbar .today{display:none}.dashboard-grid,.home-lower,.plans-grid,.analytics-grid{grid-template-columns:1fr}.balance-hero{min-height:213px;padding:22px}.hero-sum{font-size:42px}.budget-hero{padding:18px}.budget-hero h2{margin:9px 0 0}.budget-hero .progress{margin:14px 0 9px}.account-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.mini-account{padding:13px}.mini-account strong{font-size:19px}.panel{padding:17px;margin-bottom:11px}.recent{min-height:0}.analysis-stats{gap:7px}.analysis-stats .panel{padding:12px}.analysis-stats strong{font-size:18px}.filter-row{grid-template-columns:1fr 1fr}.filter-row input:first-child{grid-column:1/-1}.filter-row .btn{width:100%}.settings-grid{grid-template-columns:1fr}.topbar-actions .btn span{display:none}.topbar-actions .btn{width:43px;font-size:18px}.section-header h2{font-size:21px}.auth{align-items:center}.auth-card{padding:23px}.chart{height:215px}.chart-col .bar-track{height:155px}.tx-row{grid-template-columns:35px minmax(0,1fr) auto auto;gap:7px}.modal{align-items:end}.modal-panel{width:100%;border-radius:21px 21px 0 0;padding:22px 19px calc(22px + env(safe-area-inset-bottom));max-height:92dvh}}
 @media(max-width:360px){.hero-sum{font-size:33px}.hero-actions button{padding:8px 9px;font-size:11px}.theme-card small{display:none}.mini-account strong{font-size:17px}.topbar h1{font-size:22px}}
+
+/* Capybara Focus 2.3 — progressive enhancement, original SVG mascot */
+:root{--capy-gold:#eabb86}
+html[data-theme="capy"]{--bg:#151411;--panel:#25211d;--panel2:#302a22;--border:#4a3d32;--text:#fff6e7;--muted:#c8b6a5;--sub:#aa927d;--accent:#f0be79;--accent-ink:#322216;--accent2:#b7a0ed;--red:#f49e9f;--yellow:#f0ca88;--radius:23px}
+html[data-theme="capy"] .balance-hero{background:linear-gradient(130deg,#69472f,#3e2d26 68%,#282220)}
+html[data-theme="minimal"]{--bg:#0c1015;--panel:#151b23;--panel2:#1d2630;--border:#303844;--text:#f7f9fb;--muted:#aab5bf;--sub:#7e919f;--accent:#aebbc8;--accent-ink:#0a1219;--accent2:#a7b7c6;--red:#f6a9a9;--yellow:#e9c38c;--radius:13px}
+.theme-thumb.capy{background:linear-gradient(135deg,#9a6e50 55%,#382c25 55%)}
+.hero-top{position:relative;z-index:1}
+.balance-hero{position:relative;overflow:hidden}
+.balance-hero .hero-sum{position:relative;z-index:2}
+.balance-hero .hero-actions{position:relative;z-index:2}
+.mascot-card{position:absolute;top:39px;right:12px;width:168px;min-height:154px;display:grid;justify-items:center;gap:1px;z-index:1;pointer-events:none}
+.capy-illustration{width:132px;filter:drop-shadow(0 13px 12px #0003);transform-origin:50% 83%;animation:capy-breathe 4.4s ease-in-out infinite}
+.capy-illustration svg{width:100%;display:block}
+.capy-eye{animation:capy-blink 6s infinite;transform-box:fill-box;transform-origin:center}
+#capy-mouth-happy,#capy-mouth-worried,#capy-mouth-sad{display:none}
+.mascot-card[data-mood="happy"] #capy-mouth-calm,.mascot-card[data-mood="worried"] #capy-mouth-calm,.mascot-card[data-mood="sad"] #capy-mouth-calm{display:none}
+.mascot-card[data-mood="happy"] #capy-mouth-happy,.mascot-card[data-mood="worried"] #capy-mouth-worried,.mascot-card[data-mood="sad"] #capy-mouth-sad{display:block}
+.capy-sparkles{opacity:0;transform-origin:center;animation:capy-shine 3s infinite}
+.mascot-card[data-mood="happy"] .capy-sparkles{opacity:1}
+.mascot-copy{text-align:center;background:#0919168c;border:1px solid #ffffff26;border-radius:12px;padding:7px 9px;backdrop-filter:blur(8px);width:167px;margin-top:-10px}
+.mascot-name{font-size:9px;letter-spacing:.12em;font-weight:850;color:#f6d19e}
+.mascot-copy p{margin:3px 0 0;font-size:10px;line-height:1.28;color:#fff8ea}
+.balance-hero .hero-sum{max-width:calc(100% - 150px);white-space:nowrap;font-size:clamp(33px,3.2vw,52px)}
+.balance-hero>p{max-width:calc(100% - 150px)}
+.daily-and-quick{display:grid;grid-template-columns: .75fr 1.55fr;gap:12px;margin:14px 0}
+.daily-card,.quick-panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;min-width:0}
+.daily-value{font-size:28px;font-weight:850;letter-spacing:-.045em;color:var(--accent);margin-top:8px;font-variant-numeric:tabular-nums}
+.daily-card p{margin:3px 0 0;line-height:1.4}
+.quick-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.quick-heading small{color:var(--sub);font-size:10px}
+.quick-categories{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+.quick-categories button{border:1px solid var(--border);background:var(--panel2);border-radius:12px;color:var(--text);display:grid;justify-items:center;gap:3px;font-size:22px;line-height:1.2;min-height:65px;padding:9px 2px 7px;transition:transform .18s,border-color .18s,background .18s}
+.quick-categories button span{font-size:10px;font-weight:700}.quick-categories button:hover{transform:translateY(-2px);border-color:var(--accent)}
+.welcome-nudge{background:var(--panel);border:1px solid var(--border);border-radius:15px;display:flex;gap:12px;align-items:center;padding:14px;margin-bottom:13px}.welcome-nudge .welcome-icon{font-size:27px}.welcome-nudge>div{flex:1}.welcome-nudge strong{font-size:12px}.welcome-nudge p{margin:3px 0 0;font-size:11px;color:var(--muted)}
+.analysis-extras{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:14px}.analysis-mini{padding:13px 17px;background:var(--panel);border:1px solid var(--border);border-radius:15px}.analysis-mini span{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.analysis-mini strong{font-size:18px;letter-spacing:-.03em}
+.wish-panel{margin-top:14px}.toggle-row{display:flex;align-items:center;gap:12px;font-weight:700;font-size:12px;margin:15px 0}.toggle-row input{min-height:0;width:20px;height:20px;accent-color:var(--accent)}
+.impulse-card{text-align:center;padding:7px 0 15px}.impulse-card h3{margin:8px 0}.impulse-card p{line-height:1.5}.impulse-emoji{font-size:52px}.impulse-card+.button-row{display:grid;grid-template-columns:1fr 1fr}.impulse-card+.button-row .btn:last-child{grid-column:1/-1}
+.confetti-layer{pointer-events:none;position:fixed;inset:0;z-index:95;overflow:hidden}.confetti-layer i{position:absolute;top:-20px;width:10px;height:14px;border-radius:3px;background:var(--accent);transform:rotate(var(--confetti-rot));animation:capy-fall 2s ease-in forwards}.confetti-layer i:nth-child(3n){background:#f9d77e}.confetti-layer i:nth-child(3n+1){background:#e7a3c1}
+@keyframes capy-breathe{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-5px) rotate(1deg)}}
+@keyframes capy-blink{0%,45%,48%,98%,100%{transform:scaleY(1)}46%,47%{transform:scaleY(.1)}}
+@keyframes capy-shine{0%,100%{opacity:.3;transform:scale(.9)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes capy-fall{to{top:110vh;transform:translateX(100px) rotate(620deg);opacity:.1}}
+.panel,.daily-card,.quick-panel{animation:capy-enter .36s both}
+@keyframes capy-enter{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1200px){.quick-categories{grid-template-columns:repeat(3,1fr)}.daily-and-quick{grid-template-columns:1fr 1.1fr}}
+@media(max-width:720px){.daily-and-quick{grid-template-columns:1fr;gap:9px}.daily-card,.quick-panel{padding:13px 15px}.quick-categories{grid-template-columns:repeat(6,1fr);gap:4px}.quick-categories button{font-size:21px;min-height:61px}.quick-categories button span{font-size:9px}.quick-heading small{display:none}.mascot-card{width:115px;right:4px;top:33px}.capy-illustration{width:95px}.mascot-copy{width:113px;padding:5px}.mascot-copy p{font-size:8px}.mascot-name{font-size:7px}.balance-hero .hero-sum{max-width:calc(100% - 100px);font-size:33px}.balance-hero>p{max-width:calc(100% - 95px);font-size:10px}.analysis-extras{grid-template-columns:1fr}.analysis-mini{display:flex;align-items:center;justify-content:space-between;gap:6px}.analysis-mini span{margin:0}.daily-value{font-size:26px}.balance-hero{min-height:226px}.welcome-nudge{flex-wrap:wrap}.welcome-nudge .btn{margin-left:auto}}
+@media(max-width:380px){.quick-categories{grid-template-columns:repeat(3,1fr)}.mascot-card{right:3px}.balance-hero .hero-sum{font-size:27px}.hero-actions button{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.confetti-layer{display:none!important}}
+
+.calendar-panel{margin-bottom:11px}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:13px 0}.calendar-heading{text-align:center;font-size:10px;font-weight:750;color:var(--sub)}.calendar-day{min-width:0;min-height:54px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--muted);display:grid;justify-items:center;align-content:center;gap:3px;cursor:pointer}.calendar-day strong{color:var(--text);font-size:12px}.calendar-day small{font-size:10px}.calendar-day.has-spend small{color:var(--accent)}.calendar-day.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.calendar-empty{min-height:24px}.row-action{font-size:16px}.calendar-panel .text-button{margin-top:4px}
+@media(max-width:720px){.calendar-grid{gap:3px}.calendar-day{min-height:46px;padding:2px}.calendar-day small{font-size:9px}}
