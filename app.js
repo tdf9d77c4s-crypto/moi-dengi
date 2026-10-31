@@ -109,9 +109,63 @@ async function changePassword(){const current=prompt('Текущий парол�
 function resetData(){if(!confirm('Удалить ВСЕ данные на этом устройстве?'))return;if(!confirm('Это окончательное действие, если у тебя нет резервной копии. Удалить?'))return;localStorage.removeItem(guestMode?GUEST:STORE);state=null;key=null;salt=null;guestMode=true;openGuest();toast('Локальные данные удалены')}
 function installHelp(){if(installPrompt){installPrompt.prompt();installPrompt.userChoice.then(c=>{if(c.outcome==='accepted')toast('Установка начата');installPrompt=null})}else{const apple=/iPhone|iPad|iPod/.test(navigator.userAgent);toast(apple?'На iPhone: Safari → Поделиться → На экран «Домой»':'В браузере открой меню ⋮ → «Установить приложение» или «Добавить на главный экран»');$('install-hint').textContent=apple?'iPhone: открой сайт в Safari → Поделиться → На экран «Домой».':'Chrome/Edge: меню браузера → Установить приложение. Для офлайна нужен первый успешный визит.'}}
 function attach(){ $('auth-form').onsubmit=submitAuth;$('auth-guest').onclick=()=>{if(authMode==='protect'){showApp()}else try{openGuest()}catch(e){$('auth-error').textContent=e.message}};
- $$('[data-page-link]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.pageLink)));$('quick-top').onclick=()=>openTx();$$('[data-fast-category]').forEach(b=>b.onclick=()=>openTx('expense',{category:b.dataset.fastCategory}));$('welcome-dismiss').onclick=()=>{try{localStorage.setItem('moi-dengi-intro-v23','yes')}catch{}$('welcome-nudge').classList.add('hidden')};$('mobile-quick').onclick=()=>openTx();$('hero-spend').onclick=()=>openTx('expense');$('hero-income').onclick=()=>openTx('income');$('hero-transfer').onclick=()=>openTx('transfer');$('tx-add').onclick=()=>openTx();$('modal-close').onclick=closeModal;document.querySelector('[data-close="modal"]')?.addEventListener('click',closeModal);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});$('tx-search').oninput=renderHistory;$('tx-type').onchange=renderHistory;$('tx-month').onchange=renderHistory;$('tx-clear').onclick=()=>{historyDay='';$('tx-search').value='';$('tx-type').value='all';$('tx-month').value='';renderHistory()};$('calendar-clear').onclick=()=>{historyDay='';renderHistory()};$('tx-month').onchange=()=>{historyDay='';renderHistory()};$('goal-create').onclick=()=>openGoalEditor();$('rec-create').onclick=openRecurring;$('analysis-month').onchange=()=>{analysisPeriod=$('analysis-month').value;renderAnalytics()};$$('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));$('save-balances').onclick=saveBalances;$('save-limits').onclick=saveLimits;$('save-impulse').onclick=saveImpulsePrefs;$('export-json').onclick=backup;$('export-csv').onclick=exportCsv;$('import-json').onclick=()=>$('file-import').click();$('file-import').onchange=async e=>{await importData(e.target.files?.[0]);e.target.value=''};$('protect-data').onclick=()=>presentAuth('protect');$('lock-data').onclick=lock;$('change-password').onclick=changePassword;$('reset-data').onclick=resetData;$('install-btn').onclick=installHelp;$('sidebar-install').onclick=installHelp;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e});window.addEventListener('appinstalled',()=>toast('Приложение установлено'));
+ $$('[data-page-link]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.pageLink)));$('quick-top').onclick=()=>openTx();$$('[data-fast-category]').forEach(b=>b.onclick=()=>openTx('expense',{category:b.dataset.fastCategory}));$('welcome-dismiss').onclick=()=>{try{localStorage.setItem('moi-dengi-intro-v23','yes')}catch{}$('welcome-nudge').classList.add('hidden')};$('mobile-quick').onclick=()=>openTx();$('hero-spend').onclick=()=>openTx('expense');$('hero-income').onclick=()=>openTx('income');$('hero-transfer').onclick=()=>openTx('transfer');$('tx-add').onclick=()=>openTx();$('modal-close').onclick=closeModal;document.querySelector('[data-close="modal"]')?.addEventListener('click',closeModal);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});$('tx-search').oninput=renderHistory;$('tx-type').onchange=renderHistory;$('tx-month').onchange=renderHistory;$('tx-clear').onclick=()=>{historyDay='';$('tx-search').value='';$('tx-type').value='all';$('tx-month').value='';renderHistory()};$('calendar-clear').onclick=()=>{historyDay='';renderHistory()};$('tx-month').onchange=()=>{historyDay='';renderHistory()};$('goal-create').onclick=()=>openGoalEditor();$('rec-create').onclick=openRecurring;$('analysis-month').onchange=()=>{analysisPeriod=$('analysis-month').value;renderAnalytics()};$$('[data-theme-choice]').forEach(b=>b.onclick=()=>{setTheme(b.dataset.themeChoice);toast('Тема изменена: '+({'neobank':'NeoBank Dark','minimal':'Minimal Graphite','focus':'Budget Focus','capy':'Capybara Night'}[b.dataset.themeChoice]||'Тема'))});$('save-balances').onclick=saveBalances;$('save-limits').onclick=saveLimits;$('save-impulse').onclick=saveImpulsePrefs;$('export-json').onclick=backup;$('export-csv').onclick=exportCsv;$('import-json').onclick=()=>$('file-import').click();$('file-import').onchange=async e=>{await importData(e.target.files?.[0]);e.target.value=''};$('protect-data').onclick=()=>presentAuth('protect');$('lock-data').onclick=lock;$('change-password').onclick=changePassword;$('reset-data').onclick=resetData;$('install-btn').onclick=installHelp;$('sidebar-install').onclick=installHelp;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e});window.addEventListener('appinstalled',()=>toast('Приложение установлено'));
  for(const event of ['pointerdown','keydown'])document.addEventListener(event,()=>{if(key)resetTimeout()},{passive:true});window.addEventListener('pagehide',()=>{if(key)resetTimeout()})}
-async function init(){try{setTheme(localStorage.getItem(THEME)||'neobank');$('today-label').textContent=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'});attach();if(!crypto?.subtle||!window.isSecureContext){$('auth').classList.remove('hidden');$('auth-title').textContent='Нужен HTTPS';$('auth-description').textContent='Открой приложение по HTTPS, чтобы безопасно работать с финансовыми данными.';$('auth-submit').disabled=true;return}try{localStorage.setItem('__moi_test','1');localStorage.removeItem('__moi_test')}catch{$('auth').classList.remove('hidden');$('auth-title').textContent='Запрещено хранение';$('auth-description').textContent='Разреши локальное хранилище в браузере.';$('auth-submit').disabled=true;return}
+// -------- Auto Update 2.3.1 --------
+const APP_RELEASE='2.3.1';
+let updateCheckActive=false,updatePending=false,updateReloading=false;
+function updateSafeToReload(){
+  const modal=$('modal');
+  if(modal&&!modal.classList.contains('hidden'))return false;
+  const el=document.activeElement;
+  if(el && el.matches && el.matches('input,textarea,select,[contenteditable="true"]'))return false;
+  return document.visibilityState==='visible';
+}
+async function finishUpdateIfSafe(){
+  if(!updatePending || updateReloading || !updateSafeToReload())return;
+  updateReloading=true;
+  try{
+    if('serviceWorker' in navigator){
+      const reg=await navigator.serviceWorker.getRegistration();
+      if(reg)await reg.update();
+    }
+    // Wait briefly for skipWaiting()/clients.claim() on a changed service worker.
+    await new Promise(resolve=>setTimeout(resolve,950));
+  }catch(e){ /* Without SW, a normal reload still loads the newest files. */ }
+  window.location.reload();
+}
+async function checkAppUpdate(){
+  if(updateCheckActive || updateReloading || !navigator.onLine)return;
+  updateCheckActive=true;
+  try{
+    const url='./version.json?fresh='+Date.now();
+    const response=await fetch(url,{cache:'no-store'});
+    if(!response.ok)return;
+    const meta=await response.json();
+    if(typeof meta.version==='string' && meta.version!==APP_RELEASE){
+      updatePending=true;
+      if(!updateSafeToReload()){
+        const note=$('update-note');
+        if(note)note.textContent='Новая версия готова. Она откроется автоматически, когда ты закончишь редактирование и вернёшься к странице.';
+      }
+      await finishUpdateIfSafe();
+    }
+  }catch(e){ /* Offline/network errors are not fatal. */ }
+  finally{updateCheckActive=false}
+}
+function initAutoUpdates(){
+  window.setInterval(()=>{if(updatePending)finishUpdateIfSafe();else checkAppUpdate()},90000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(updatePending)finishUpdateIfSafe();else checkAppUpdate()} });
+  window.addEventListener('focus',()=>{if(updatePending)finishUpdateIfSafe();else checkAppUpdate()});
+  document.addEventListener('focusout',()=>{if(updatePending)window.setTimeout(finishUpdateIfSafe,400)});
+  window.addEventListener('online',checkAppUpdate);
+  window.addEventListener('pageshow',()=>window.setTimeout(checkAppUpdate,1200));
+  // Also check shortly after opening. This won't interrupt an active input form.
+  window.setTimeout(checkAppUpdate,2400);
+}
+// -------- End Auto Update --------
+
+async function init(){try{setTheme(localStorage.getItem(THEME)||'neobank');$('today-label').textContent=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'});attach();initAutoUpdates();if(!crypto?.subtle||!window.isSecureContext){$('auth').classList.remove('hidden');$('auth-title').textContent='Нужен HTTPS';$('auth-description').textContent='Открой приложение по HTTPS, чтобы безопасно работать с финансовыми данными.';$('auth-submit').disabled=true;return}try{localStorage.setItem('__moi_test','1');localStorage.removeItem('__moi_test')}catch{$('auth').classList.remove('hidden');$('auth-title').textContent='Запрещено хранение';$('auth-description').textContent='Разреши локальное хранилище в браузере.';$('auth-submit').disabled=true;return}
  if(localStorage.getItem(STORE))presentAuth('unlock');else if(localStorage.getItem(LEGACY))presentAuth('setup');else openGuest();
  if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{})});
  }catch(e){console.error(e);$('auth').classList.remove('hidden');$('auth-error').textContent='Ошибка запуска: '+e.message}}

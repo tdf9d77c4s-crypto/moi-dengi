@@ -1,12 +1,46 @@
-const CACHE='moi-dengi-pwa-v23-20261031-1';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('moi-dengi-pwa-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+/* Capybara Focus v2.3.1: network-first, offline fallback. Never touches private data. */
+const CACHE='moi-dengi-pwa-v231-20261031-1';
+const ASSETS=['./','./index.html','./styles.css','./app.js','./version.json','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+const INDEX=new URL('./index.html',self.registration.scope).href;
+const SCOPE=new URL(self.registration.scope);
+self.addEventListener('install',event=>{
+ event.waitUntil((async()=>{
+  const c=await caches.open(CACHE);
+  await Promise.all(ASSETS.map(async file=>{
+   const uri=new URL(file,self.registration.scope).href;
+   const response=await fetch(uri,{cache:'reload'});
+   if(!response.ok)throw Error('Не получен '+file+': '+response.status);
+   await c.put(uri,response);
+  }));
+  await self.skipWaiting();
+ })());
+});
+self.addEventListener('activate',event=>{
+ event.waitUntil((async()=>{
+  const names=await caches.keys();
+  await Promise.all(names.filter(x=>x.startsWith('moi-dengi-pwa-')&&x!==CACHE).map(x=>caches.delete(x)));
+  await self.clients.claim();
+ })());
+});
 self.addEventListener('fetch',event=>{
- const req=event.request;
- if(req.method!=='GET'||new URL(req.url).origin!==self.location.origin)return;
- if(req.mode==='navigate'){
-  event.respondWith(fetch(req).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put('./index.html',copy))}return res}).catch(async()=>await caches.match('./index.html')||Response.error()));return;
- }
- event.respondWith(caches.match(req).then(cached=>cached||fetch(req).then(resp=>{if(resp.ok){const copy=resp.clone();caches.open(CACHE).then(c=>c.put(req,copy))}return resp})));
+ const request=event.request;if(request.method!=='GET')return;
+ const url=new URL(request.url);
+ if(url.origin!==SCOPE.origin||!url.pathname.startsWith(SCOPE.pathname))return;
+ event.respondWith((async()=>{
+  const cache=await caches.open(CACHE);
+  try{
+   const response=await fetch(request,{cache:'no-store'});
+   if(response.ok&&response.type!=='opaque'){
+    const key=request.mode==='navigate'?INDEX:request;
+    await cache.put(key,response.clone());
+   }
+   return response;
+  }catch(err){
+   if(request.mode==='navigate'){
+    const offline=await cache.match(INDEX);if(offline)return offline;
+   }
+   const offline=await cache.match(request,{ignoreSearch:true});
+   return offline||Response.error();
+  }
+ })());
 });

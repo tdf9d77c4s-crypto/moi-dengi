@@ -63,3 +63,9 @@ html[data-theme="minimal"]{--bg:#0c1015;--panel:#151b23;--panel2:#1d2630;--borde
 
 .calendar-panel{margin-bottom:11px}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:13px 0}.calendar-heading{text-align:center;font-size:10px;font-weight:750;color:var(--sub)}.calendar-day{min-width:0;min-height:54px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--muted);display:grid;justify-items:center;align-content:center;gap:3px;cursor:pointer}.calendar-day strong{color:var(--text);font-size:12px}.calendar-day small{font-size:10px}.calendar-day.has-spend small{color:var(--accent)}.calendar-day.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.calendar-empty{min-height:24px}.row-action{font-size:16px}.calendar-panel .text-button{margin-top:4px}
 @media(max-width:720px){.calendar-grid{gap:3px}.calendar-day{min-height:46px;padding:2px}.calendar-day small{font-size:9px}}
+
+/* v2.3.1 mobile theme picker: 4 equally accessible cards, including Capybara Night */
+@media(max-width:930px){.theme-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.theme-card{min-width:0;min-height:100px;touch-action:manipulation;padding:10px}.theme-card strong{font-size:12px}.theme-card small{font-size:10px;line-height:1.25}}
+@media(max-width:420px){.theme-cards{gap:8px}.theme-thumb{height:42px}}
+/* Signals the selected palette with strong contrast on mobile. */
+.theme-card[data-theme-choice="capy"].active{box-shadow:0 0 0 2px var(--accent),0 8px 25px #0003}
