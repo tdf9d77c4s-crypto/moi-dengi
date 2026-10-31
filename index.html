@@ -3,14 +3,15 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a1018"><meta name="color-scheme" content="dark">
-<meta name="description" content="Мои деньги — личный финансовый трекер, расходы, бюджеты и накопления"><meta name="application-version" content="2.5.0">
+<meta name="description" content="Мои деньги — личный финансовый трекер, расходы, бюджеты и накопления"><meta name="application-version" content="2.6.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self'; manifest-src 'self'">
 <link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/png" href="./icon-192.png"><link rel="apple-touch-icon" href="./icon-192.png">
-<link rel="stylesheet" href="./styles.css"><title>Мои деньги · Living 3D 2.5</title>
+<link rel="stylesheet" href="./styles.css"><title>Мои деньги · Premium Worlds 2.6</title>
 </head>
 <body>
+<div class="world-background" aria-hidden="true"><div class="world-world"></div><div class="world-vignette"></div><div class="world-glimmers"></div></div>
 <div id="auth" class="auth hidden">
- <div class="auth-card"><div class="auth-mark">₽</div><span class="eyebrow">МОИ ДЕНЬГИ · 2.5</span>
+ <div class="auth-card"><div class="auth-mark">₽</div><span class="eyebrow">МОИ ДЕНЬГИ · 2.6</span>
  <h1 id="auth-title">Открыть личный учёт</h1><p id="auth-description" class="muted">Введи свой пароль для доступа к защищённым данным этого браузера.</p>
  <form id="auth-form"><label for="auth-pass">Пароль</label><input id="auth-pass" type="password" autocomplete="current-password" minlength="8" required placeholder="Пароль от личных записей">
  <div id="confirm-wrap" class="hidden"><label for="auth-confirm">Повтори пароль</label><input id="auth-confirm" type="password" autocomplete="new-password" placeholder="Повтори пароль"></div>
@@ -20,7 +21,7 @@
 </div>
 <div id="app" class="app hidden">
 <aside class="sidebar">
-  <div class="brand"><div class="brand-icon">₽</div><div><strong>мои деньги</strong><span>Личные финансы. Просто.</span></div></div>
+  <div class="brand"><div class="brand-icon">₽</div><div><strong>мои деньги</strong><span>Красивый порядок в деньгах.</span></div></div>
   <div class="side-group">РАБОЧЕЕ ПРОСТРАНСТВО</div>
   <nav class="side-nav" aria-label="Разделы">
     <button class="nav active" data-page-link="home"><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3.5 10 8.5-7 8.5 7v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M9 21v-7h6v7"/></svg></span> Обзор</button>
@@ -35,16 +36,21 @@
 <header class="topbar"><div><div class="eyebrow" id="page-eyebrow">ЛИЧНЫЕ ФИНАНСЫ</div><h1 id="page-title">Главная</h1></div><div class="topbar-actions"><span class="today" id="today-label"></span><button id="paw-switch" class="paw-switch" type="button" aria-label="Сменить персонажа — капибара или такса" title="Сменить персонажа"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="8" r="2"/><circle cx="10" cy="4.8" r="2"/><circle cx="15.5" cy="5.5" r="2"/><circle cx="20" cy="9" r="2"/><path d="M12 10.5c-3.6 0-7.4 4-7.4 7.1 0 2.1 1.6 3.1 3.3 2.7 2.3-.5 3.1-.6 4.1-.2 2.1.8 4.6-.3 4.6-2.4 0-3.4-4.1-7.2-7.9-7.2Z"/></svg></button><button id="quick-top" class="btn primary" type="button">＋ <span>Добавить</span></button></div></header>
 <main>
 <section class="view active" id="view-home">
- <section class="living-theater" id="living-theater" data-pet="capybara" aria-label="Интерактивный 3D-персонаж">
-   <div class="theater-aurora"></div><div class="theater-orb"></div><div class="theater-ridge back"></div><div class="theater-ridge front"></div><div class="theater-grain"></div>
-   <div class="theater-copy"><span class="eyebrow">МОИ ДЕНЬГИ · LIVING</span><h2 id="mascot-hero-title">Знакомься, Капи.</h2><p id="mascot-hero-sub">Твой спокойный спутник в мире финансов</p></div>
-   <button id="theater-paw" class="theater-paw" type="button" title="Сменить персонажа" aria-label="Сменить персонажа">✦ <span>Выбрать друга</span></button>
-   <div class="mascot-viewer" id="mascot-viewer" role="img" aria-label="Объёмная капибара. Поверни пальцем или мышкой."><canvas id="mascot-canvas" aria-label="3D персонаж"></canvas><div id="mascot-fallback" class="mascot-fallback hidden" role="status"><span id="mascot-fallback-animal" aria-hidden="true">🦫</span><small>3D доступно в браузере с WebGL</small></div><span class="mascot-ground"></span></div>
-   <div class="theater-bottom"><div class="mascot-speech"><span class="speech-pulse"></span><span id="mascot-say">Деньги любят внимание, а не спешку.</span></div><span class="turn-hint">↻ Поверни меня</span></div>
-  </section>
-  <div class="vault-head"><div><span class="eyebrow">ТВОИ ДЕНЬГИ</span><h2>Один взгляд — четыре счёта</h2></div><span class="vault-note">Выбери счёт для деталей ↗</span></div>
+ <section class="living-theater" id="living-theater" data-pet="capybara" aria-label="Живой персонаж и атмосферный фон">
+  <div class="hero-noise" aria-hidden="true"></div>
+  <div class="theater-copy"><span class="eyebrow">МОИ ДЕНЬГИ · ТВОЙ МИР</span><h2 id="mascot-hero-title">Финансы в удовольствие.</h2><p id="mascot-hero-sub">Простые решения. Красивые привычки.</p></div>
+  <button id="theater-paw" class="theater-paw" type="button" title="Сменить персонажа" aria-label="Сменить персонажа: капибара или такса">🐾 <span>Сменить друга</span></button>
+  <div class="mascot-viewer" id="mascot-viewer" role="group" aria-label="Нажми на персонажа, чтобы увидеть реакцию">
+    <button class="pet-stage" id="pet-tap" type="button" aria-label="Погладить персонажа и увидеть реакцию"><img id="pet-cutout" src="./capybara.png" alt="Капибара в короне с чашкой кофе" draggable="false" loading="eager"><span class="pet-star">✦</span><span class="pet-shimmer">✧</span></button>
+    <span class="pet-soundwaves" aria-hidden="true">)))</span><span class="pet-steam" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span id="mascot-fallback-animal" class="hidden">🦫</span>
+  </div>
+  <div class="theater-bottom"><div class="mascot-speech"><span class="speech-pulse"></span><span id="mascot-say">Нажми на меня — будет сюрприз.</span></div><span class="turn-hint">Коснись персонажа ✦</span></div>
+</section>
+<div class="vault-head"><div><span class="eyebrow">ТВОИ ДЕНЬГИ</span><h2>Один взгляд — четыре счёта</h2></div><span class="vault-note">Выбери счёт для деталей ↗</span></div>
   <section class="unified-vault"><div class="vault-sheen"></div><div class="account-grid premium-accounts" id="account-grid" aria-label="Четыре счёта в одной карте"></div></section>
- <div class="premium-budget-row">
+ <div class="world-quick-actions"><button id="world-add-expense" type="button"><span class="wqa-icon">＋</span><span><strong>Расход</strong><small>Записать покупку</small></span><span class="wqa-chevron">↗</span></button><button id="world-add-income" type="button"><span class="wqa-icon">↙</span><span><strong>Доход</strong><small>Добавить поступление</small></span><span class="wqa-chevron">↗</span></button></div>
+<div class="premium-budget-row">
   <div class="budget-hero">
     <div class="panel-title-row"><div><span class="eyebrow">НЕДЕЛЬНЫЙ БЮДЖЕТ</span><h2 id="week-left">—</h2><span class="muted tiny" id="week-title">Осталось до конца недели</span></div><span id="week-status" class="status neutral">Без лимита</span></div>
     <div class="progress"><div id="week-bar"></div></div>
@@ -57,7 +63,7 @@
  <div class="welcome-nudge hidden" id="welcome-nudge"><span class="welcome-icon">🌱</span><div><strong>Добро пожаловать! Начни с удобного шага.</strong><p>Задай лимит на неделю или просто запиши первую покупку. Всё хранится в твоём браузере.</p></div><button class="btn outline small" id="welcome-dismiss" type="button">Понятно</button></div>
  <div class="home-lower premium-history">
   <section class="panel recent"><div class="panel-title-row"><div><span class="eyebrow">АКТИВНОСТЬ</span><h3>Последние операции</h3></div><button type="button" class="text-button" data-page-link="transactions">Все операции →</button></div><div id="recent-list" class="tx-list"></div></section>
-  <div class="home-side hidden"><section class="panel"><div class="panel-title-row"><div><span class="eyebrow">НАКОПЛЕНИЯ</span><h3>Мои цели</h3></div><button type="button" class="text-button" data-page-link="plans">Открыть →</button></div><div id="home-goals"></div></section>
+  <div class="home-side"><section class="panel"><div class="panel-title-row"><div><span class="eyebrow">НАКОПЛЕНИЯ</span><h3>Мои цели</h3></div><button type="button" class="text-button" data-page-link="plans">Открыть →</button></div><div id="home-goals"></div></section>
    <section class="panel category-panel"><div class="panel-title-row"><div><span class="eyebrow">ЗА ЭТОТ МЕСЯЦ</span><h3>Куда уходят деньги</h3></div><button type="button" class="text-button" data-page-link="analytics">Детали →</button></div><div id="home-categories"></div></section>
   </div>
  </div>
@@ -69,7 +75,8 @@
 </div><div class="panel wish-panel"><div class="panel-title-row"><div><span class="eyebrow">НЕОБЯЗАТЕЛЬНЫЕ ПОКУПКИ</span><h3>Отложенные желания</h3></div><span class="tiny muted" id="wish-count"></span></div><p class="tiny muted">Идеи без списания денег. Вернуться к покупке или удалить можно в любое время.</p><div id="wish-list"></div></div></section>
 <section class="view" id="view-analytics"><div class="section-header"><div><span class="eyebrow">СТАТИСТИКА</span><h2>Аналитика</h2></div><select id="analysis-month" aria-label="Месяц аналитики"></select></div><div class="analysis-stats"><div class="panel"><span class="eyebrow">РАСХОДЫ · RUP</span><strong id="analysis-expense">0,00</strong></div><div class="panel"><span class="eyebrow">ДОХОДЫ · RUP</span><strong id="analysis-income">0,00</strong></div><div class="panel"><span class="eyebrow">РАЗНИЦА · RUP</span><strong id="analysis-net">0,00</strong></div><div class="analysis-extras" id="analysis-extras"><div class="analysis-mini"><span>Средний расход / день</span><strong id="analysis-average">—</strong></div><div class="analysis-mini"><span>Доставка и кафе</span><strong id="analysis-delivery">—</strong></div><div class="analysis-mini"><span>Необязательные покупки</span><strong id="analysis-optional">—</strong></div></div><div class="analytics-grid"><div class="panel"><h3>Динамика расходов</h3><p class="tiny muted">Последние 6 месяцев, только счета RUP</p><div id="chart-bars" class="chart" role="img" aria-label="График расходов"></div></div><div class="panel"><h3>Структура расходов</h3><p class="tiny muted">Выбранный месяц, счета RUP</p><div id="analysis-categories"></div></div></div><p class="tiny muted">Исторические записи включены в аналитику, но не уменьшают текущие балансы. Валюты не складываются без обмена.</p></section>
 <section class="view" id="view-settings"><div class="section-header"><div><span class="eyebrow">ПЕРСОНАЛИЗАЦИЯ</span><h2>Настройки</h2></div></div><div class="settings-grid">
- <div class="panel pet-settings"><div class="panel-title-row"><div><span class="eyebrow">НАСТРОЙ ДНЯ</span><h3>Твой персонаж</h3></div><span class="paw-settings-icon">✦</span></div><p class="muted">Выбирай между двумя настоящими 3D-персонажами. Их можно крутить на главной — даже без интернета.</p><div class="pet-choice-row"><button class="pet-choice" data-pet-choice="capybara" type="button"><span class="pet-choice-icon">◕</span><span><strong>Капибара</strong><small>Тепло и спокойствие</small></span><span class="pet-choice-check">✓</span></button><button class="pet-choice" data-pet-choice="dachshund" type="button"><span class="pet-choice-icon">♞</span><span><strong>Такса</strong><small>Энергия и движение</small></span><span class="pet-choice-check">✓</span></button></div><label class="toggle-row" style="margin-top:17px"><input type="checkbox" id="mascot-motion" checked><span>Живые движения персонажа</span></label><p class="tiny muted">Плавная анимация останавливается, если включено уменьшение движения в настройках устройства.</p></div>
+ <div class="panel pet-interaction-settings"><h3>Реакции персонажа</h3><p class="muted">Нажми на животное на главной: капибара пьёт кофе, такса радостно лает.</p><label class="sound-setting"><span>Звук таксы</span><input id="pet-sound-enabled" type="checkbox" checked></label><p class="tiny muted">Звук включается только после твоего нажатия. На телефоне он зависит от режима звука.</p></div>
+ <div class="panel pet-settings"><div class="panel-title-row"><div><span class="eyebrow">НАСТРОЙ ДНЯ</span><h3>Твой персонаж</h3></div><span class="paw-settings-icon">✦</span></div><p class="muted">Выбирай между двумя настоящими Персонажами. Их можно крутить на главной — даже без интернета.</p><div class="pet-choice-row"><button class="pet-choice" data-pet-choice="capybara" type="button"><span class="pet-choice-icon">◕</span><span><strong>Капибара</strong><small>Тепло и спокойствие</small></span><span class="pet-choice-check">✓</span></button><button class="pet-choice" data-pet-choice="dachshund" type="button"><span class="pet-choice-icon">♞</span><span><strong>Такса</strong><small>Энергия и движение</small></span><span class="pet-choice-check">✓</span></button></div><label class="toggle-row" style="margin-top:17px"><input type="checkbox" id="mascot-motion" checked><span>Живые движения персонажа</span></label><p class="tiny muted">Плавная анимация останавливается, если включено уменьшение движения в настройках устройства.</p></div>
  <div class="panel premium-tools"><h3>Инструменты</h3><p class="muted">Аналитика, календарь и расширенные функции — когда понадобятся.</p><div class="premium-tools-actions"><button class="btn outline" type="button" data-page-link="analytics">▥ Смотреть аналитику</button><button class="btn outline" type="button" data-page-link="plans">◎ Цели и платежи</button></div></div>
  <div class="panel"><h3>Обновления</h3><p class="muted" id="update-note">Приложение автоматически проверяет новые версии при открытии и периодически во время работы. При заполнении формы обновление подождёт.</p></div>
  <div class="panel"><h3>Оформление</h3><p class="muted">Один сайт — несколько стилей. Выбор запоминается.</p><div class="theme-cards"><button class="theme-card" data-theme-choice="premium"><span class="theme-thumb premium"></span><strong>Premium Dark</strong><small>Основной стиль</small></button><button class="theme-card" data-theme-choice="capy"><span class="theme-thumb capy"></span><strong>Warm Studio</strong><small>Мягкий тёплый</small></button><button class="theme-card" data-theme-choice="minimal"><span class="theme-thumb minimal"></span><strong>Graphite</strong><small>Чистый графит</small></button></div></div>
@@ -79,12 +86,12 @@
  <details class="panel collapsible"><summary>Резервные копии и перенос <span>▾</span></summary><p class="muted" id="backup-warning">В режиме без пароля JSON и CSV содержат данные без шифрования.</p><div class="button-row"><button id="export-json" class="btn outline" type="button">↓ Резервная копия JSON</button><button id="export-csv" class="btn outline" type="button">↓ CSV</button><button id="import-json" class="btn outline" type="button">↑ Восстановить JSON</button><input type="file" id="file-import" accept=".json,application/json" class="hidden"></div><p class="tiny muted">Импорт заменяет текущие записи. Перед ним сохрани копию.</p></details>
  <details class="panel collapsible"><summary>Конфиденциальность <span>▾</span></summary><p id="privacy-info" class="muted"></p><div class="button-row"><button id="protect-data" class="btn outline" type="button">Защитить паролем</button><button id="change-password" class="btn outline" type="button">Сменить пароль</button><button id="lock-data" class="btn outline" type="button">Закрыть учёт</button><button id="reset-data" class="btn danger" type="button">Удалить локальные данные</button></div></details>
  <div class="panel"><h3>Приложение на телефоне</h3><p class="muted">Установи сайт на главный экран. После первого посещения приложение работает и без интернета, но данные между устройствами не синхронизируются.</p><button id="install-btn" class="btn outline" type="button">＋ Установить приложение</button><p id="install-hint" class="tiny muted"></p></div>
-</div><footer>Мои деньги 2.5 · данные в браузере · синхронизации между устройствами пока нет</footer></section>
+</div><footer>Мои деньги 2.6 · данные в браузере · синхронизации между устройствами пока нет</footer></section>
 </main></div>
 <nav class="mobile-nav" aria-label="Навигация по приложению"><button data-page-link="home" class="active"><span>▦</span>Обзор</button><button data-page-link="transactions"><span>⇄</span>История</button><button id="mobile-quick" class="mobile-add" aria-label="Добавить расход"><span>＋</span></button><button data-page-link="plans"><span>◎</span>Цели</button><button data-page-link="settings"><span>⚙</span>Ещё</button></nav>
 </div>
 <div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-backdrop" data-close="modal"></div><div class="modal-panel"><div class="modal-head"><div><span class="eyebrow" id="modal-kicker">БЫСТРАЯ ЗАПИСЬ</span><h2 id="modal-title">Новый расход</h2></div><button id="modal-close" class="icon-btn" type="button" aria-label="Закрыть">×</button></div><div id="modal-content"></div></div></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="./mascot3d.js" defer></script>
+<script src="./pet-actions.js" defer></script>
 <script src="./app.js" defer></script>
 </body></html>

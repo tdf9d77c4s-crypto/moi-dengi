@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Мои деньги — Living 3D",
+  "name": "Мои деньги — Premium Worlds",
   "short_name": "Мои деньги",
-  "description": "Личные финансы с интерактивным 3D-персонажем",
+  "description": "Личные финансы в двух атмосферных мирах с анимированными персонажами",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
