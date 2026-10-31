@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>Мои деньги — финансовый трекер</title>
+  
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --bg2:#eef2f9;
+      --panel:#ffffffcc;
+      --panel-solid:#ffffff;
+      --line:#dbe3f0;
+      --text:#172033;
+      --muted:#60708f;
+      --soft:#7e8ba6;
+      --primary:#5b6cff;
+      --primary-2:#7a8cff;
+      --accent:#25c2a0;
+      --danger:#ea5d73;
+      --warning:#f4a53a;
+      --gold:#f4b64a;
+      --shadow:0 18px 45px rgba(34,50,84,.10);
+      --shadow-soft:0 8px 24px rgba(32,51,84,.08);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font:15px/1.5 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(91,108,255,.14), transparent 30%),
+        radial-gradient(circle at top right, rgba(37,194,160,.10), transparent 22%),
+        linear-gradient(180deg, #fbfcff 0%, var(--bg) 44%, var(--bg2) 100%);
+    }
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    a{color:var(--primary)}
+    .app{width:min(1220px,calc(100% - 40px));margin:0 auto;padding:28px 0 72px}
+    .header{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;
+      padding:18px 20px;border:1px solid rgba(255,255,255,.65);border-radius:28px;
+      background:linear-gradient(135deg, rgba(255,255,255,.88), rgba(255,255,255,.65));
+      backdrop-filter:blur(18px); box-shadow:var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{
+      width:54px;height:54px;border-radius:18px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--primary),#85a1ff 70%);color:#fff;
+      box-shadow:0 12px 32px rgba(91,108,255,.28);font-size:27px;font-weight:800
+    }
+    .eyebrow{color:var(--primary);text-transform:uppercase;letter-spacing:.14em;font-weight:800;font-size:11px}
+    .brand h1{font-size:28px;letter-spacing:-.04em;margin:0}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+    .tag{border:1px solid #d9e2f2;background:#fff;color:#3e567a;border-radius:999px;padding:9px 13px;font-size:12px;white-space:nowrap;box-shadow:var(--shadow-soft)}
+    .lead{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:18px 0 16px}
+    .lead h2{margin:0;font-size:22px;letter-spacing:-.03em}.lead p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .link-btn,.outline,.primary,.week-nav button{
+      transition:.2s ease; transform:translateY(0);
+    }
+    .link-btn:hover,.outline:hover,.primary:hover,.week-nav button:hover{transform:translateY(-1px)}
+    .link-btn{padding:10px 14px;border:1px solid var(--line);background:#fff;border-radius:14px;color:#35507a;box-shadow:var(--shadow-soft)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:15px}
+    .balance-card{
+      position:relative;overflow:hidden;
+      background:linear-gradient(160deg, rgba(255,255,255,.92), rgba(248,250,255,.82));
+      border:1px solid rgba(255,255,255,.72); border-radius:var(--radius); padding:22px; min-height:155px; box-shadow:var(--shadow);
+    }
+    .balance-card:before{content:"";position:absolute;right:-42px;top:-52px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle, rgba(91,108,255,.16), transparent 68%)}
+    .balance-card.crypto:before{background:radial-gradient(circle, rgba(244,182,74,.18), transparent 68%)}
+    .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.card-head span{color:#4a5d80;font-size:13px;font-weight:700}
+    .account-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#eef2ff;color:var(--primary);font-weight:800}
+    .crypto .account-icon{background:#fff4d9;color:#b27c0e}
+    .balance{font-size:34px;font-weight:800;letter-spacing:-.055em;line-height:1.06;overflow-wrap:anywhere;color:#10192c}
+    .unit{font-size:14px;font-weight:700;color:var(--soft);margin-left:6px;letter-spacing:0}
+    .balance-note{margin-top:9px;color:#71829f;font-size:12px}
+    .notice{
+      border:1px solid #dde6f6;background:linear-gradient(135deg,#ffffff,#f6f9ff);border-radius:18px;padding:15px 16px;
+      display:flex;gap:11px;align-items:start;color:#48617f;font-size:13px;margin:15px 0 24px;box-shadow:var(--shadow-soft)
+    }
+    .notice strong{color:#233558}.notice-icon{font-size:18px;color:var(--primary);line-height:1.2}
+    .layout{display:grid;grid-template-columns:minmax(0,1.38fr) minmax(320px,.92fr);gap:16px}.stack{display:flex;flex-direction:column;gap:16px}
+    .panel{
+      background:var(--panel);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.68);
+      border-radius:var(--radius);padding:22px;min-width:0;box-shadow:var(--shadow)
+    }
+    .panel h3{font-size:18px;letter-spacing:-.025em;margin:0 0 3px}.panel-sub{margin:0 0 18px;font-size:13px;color:var(--muted)}
+    .mode{display:grid;grid-template-columns:repeat(3,1fr);background:#edf2fb;border-radius:16px;padding:5px;gap:5px;margin:16px 0 19px;border:1px solid #e1e7f2}
+    .mode button{padding:10px 6px;border:0;background:transparent;color:#65789d;border-radius:12px;font-weight:750;font-size:13px}
+    .mode button.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 8px 18px rgba(91,108,255,.22)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form-row{display:flex;flex-direction:column;gap:6px}.form-row.full{grid-column:1/-1}
+    label{font-size:12px;color:#5e7298;font-weight:700}
+    input,select{
+      width:100%;border:1px solid #d8e2f0;border-radius:14px;background:#fff;color:var(--text);padding:11px 12px;min-height:46px;outline:none;transition:.18s;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.8)
+    }
+    input:focus,select:focus{border-color:#9fb0ff;box-shadow:0 0 0 4px rgba(91,108,255,.12)}
+    input::placeholder{color:#98a5bc}
+    .tiny{margin:5px 0 0;font-size:11px;color:var(--soft)}
+    .primary{width:100%;background:linear-gradient(135deg,var(--accent),#6ad8bf);border:0;border-radius:14px;color:#0c2822;font-weight:800;padding:12px 18px;min-height:48px;margin-top:17px;box-shadow:0 12px 22px rgba(37,194,160,.20)}
+    .primary:hover{filter:brightness(1.02)}
+    .summary-title{display:flex;align-items:center;justify-content:space-between;gap:8px}.summary-title input{width:145px;min-height:38px;padding:5px 9px;font-size:13px}
+    .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+    .kpi{background:linear-gradient(180deg,#fff,#f8faff);border:1px solid #e4eaf4;border-radius:18px;padding:14px;box-shadow:var(--shadow-soft)}
+    .kpi-label{font-size:12px;color:var(--muted)}.kpi-val{font-size:24px;font-weight:800;letter-spacing:-.04em;margin:5px 0}.kpi-val.expense{color:var(--danger)}.kpi-val.income{color:var(--accent)}.small-note{color:var(--soft);font-size:11px}
+    .bars{display:flex;flex-direction:column;gap:13px;margin-top:17px}.bar-row{display:grid;gap:6px}.bar-line{display:flex;justify-content:space-between;align-items:center;gap:9px;font-size:12px}.bar-line .name{color:#4c6283;font-weight:700}.bar-line .amount{color:#172033;font-variant-numeric:tabular-nums;font-weight:700}.bar-track{width:100%;height:8px;border-radius:999px;background:#e6edf7;overflow:hidden}.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--accent))}
+    .empty{padding:22px 10px;text-align:center;color:var(--soft);border:1px dashed #cad6e8;background:#fafcff;border-radius:16px;margin-top:16px;font-size:13px}
+    .transactions{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+    .transaction{display:grid;grid-template-columns:40px minmax(0,1fr) auto 30px;gap:10px;align-items:center;padding:12px 0;border-top:1px solid #edf2fa}.transaction:first-child{border-top:0;padding-top:0}
+    .tx-icon{border-radius:14px;width:40px;height:40px;display:grid;place-items:center;background:#eef2ff;color:var(--primary);font-size:17px}.tx-icon.exp{background:#ffe9ee;color:var(--danger)}.tx-icon.transfer{background:#ecefff;color:#6172f5}
+    .tx-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tx-desc{font-size:11px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tx-value{text-align:right;white-space:nowrap;font-weight:800;font-size:13px;font-variant-numeric:tabular-nums}.tx-value.exp{color:var(--danger)}.tx-value.income{color:var(--accent)}.tx-value.transfer{color:#6172f5}.tx-small{display:block;font-size:11px;font-weight:500;color:var(--soft)}
+    .icon-button{background:transparent;border:0;color:#8ca0c0;padding:6px;border-radius:10px}.icon-button:hover{color:var(--danger);background:#fff1f4}
+    .tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+    .outline{background:#fff;color:#33507a;border:1px solid #d9e2f2;padding:10px 13px;border-radius:14px;font-size:12px;font-weight:750;box-shadow:var(--shadow-soft)}.outline:hover{background:#f7faff}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.settings{margin-top:15px;display:none}.settings.open{display:block}.settings .form-grid{margin-bottom:12px}
+    .danger{background:#fff2f4;color:#b84155;border:1px solid #f0c4cc}
+    .foot{display:flex;justify-content:space-between;gap:15px;color:#73839f;font-size:12px;margin-top:22px;flex-wrap:wrap}
+    .toast{position:fixed;right:18px;bottom:20px;max-width:min(420px,calc(100vw - 36px));background:#1f2b45;border:1px solid #30415e;color:#f5f9ff;padding:13px 18px;border-radius:16px;box-shadow:var(--shadow);opacity:0;transform:translateY(15px);pointer-events:none;transition:.22s;z-index:20}.toast.show{opacity:1;transform:translateY(0)}
+    .attention{font-size:12px;color:#a06b0d;margin-top:8px}.hidden{display:none!important}
+
+    .weekly-panel{margin:0 0 18px;border-color:#dfe6f6;background:linear-gradient(135deg,#ffffff,#f5f8ff 55%,#eef8f5)}
+    .weekly-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.weekly-head h3{font-size:21px}
+    .week-nav{display:flex;align-items:center;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+    .week-nav button{border:1px solid #dbe3f0;background:#fff;color:#3d557c;border-radius:12px;padding:10px 11px;box-shadow:var(--shadow-soft)}
+    .week-nav button:last-child{padding-inline:13px}
+    .week-dates{font-size:13px;color:#4d6284;font-weight:700;background:#fff;border:1px solid #e0e7f4;border-radius:12px;padding:10px 12px;white-space:nowrap;box-shadow:var(--shadow-soft)}
+    .weekly-config{display:grid;grid-template-columns:minmax(180px,280px) auto 1fr;gap:12px;align-items:end;margin-bottom:15px}.weekly-config .tiny{margin-bottom:8px}
+    .week-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 14px}.week-metric{background:#fff;border:1px solid #e1e8f4;border-radius:18px;padding:14px;box-shadow:var(--shadow-soft)}
+    .w-label{font-size:12px;color:var(--muted);margin-bottom:7px}.w-value{font-size:24px;font-weight:800;letter-spacing:-.04em}.w-good{color:var(--accent)}.w-warn{color:var(--warning)}.w-bad{color:var(--danger)}
+    .week-progress{width:100%;height:12px;background:#e8eef8;border-radius:999px;overflow:hidden;border:1px solid #dde4f0}.week-progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#63d9d1);border-radius:999px;transition:width .22s ease}.week-progress-fill.warning{background:linear-gradient(90deg,#f7b048,#ffd16c)}.week-progress-fill.exceeded{background:linear-gradient(90deg,#ea5d73,#ff97aa)}
+    .week-status{margin-top:12px;padding:12px 14px;border-radius:15px;background:#f2f6ff;border:1px solid #e0e7f3;color:#4b6182;font-size:13px;font-weight:600}.week-status.warning{background:#fff6e9;border-color:#f6dfb0;color:#a66b10}.week-status.exceeded{background:#fff0f2;border-color:#f4c7d0;color:#b6495b}
+    .week-details{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:9px;color:#6e7f9c;font-size:12px;font-weight:700}
+
+    @media(max-width:980px){.layout{grid-template-columns:1fr}.weekly-config{grid-template-columns:1fr}.week-nav{justify-content:flex-start}}
+    @media(max-width:720px){.cards{grid-template-columns:1fr}.header{padding:16px}.brand h1{font-size:24px}.balance-card{min-height:125px}.lead h2{font-size:19px}.week-metrics{grid-template-columns:1fr}.summary-title{flex-direction:column;align-items:flex-start}.summary-title input{width:100%}.two,.kpis,.form-grid{grid-template-columns:1fr}}
+    @media(max-width:600px){.app{width:min(100% - 24px,1220px);padding-top:18px}.header .tag{display:none}.panel,.balance-card{padding:18px}.card-head{margin-bottom:14px}.balance{font-size:30px}.transaction{gap:8px}.tx-value{font-size:12px}.week-nav{gap:6px}.week-dates{width:100%;text-align:center}.foot{line-height:1.5}}
+  </style>
+
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand"><div class="logo">₽</div><div><div class="eyebrow">Веб-приложение</div><h1>Мои деньги</h1><p>Личный трекер • онлайн-версия 1.0</p></div></div>
+    <span class="tag">● Данные только в этом браузере</span>
+  </header>
+  <div class="lead"><div><h2>Обзор балансов</h2><p>Минималистичный вид: главное — понять, сколько у тебя есть и куда уходят деньги.</p></div><button type="button" class="link-btn" id="settingsToggle">⚙ Настроить</button></div>
+  <section class="cards" aria-label="Остатки по счетам">
+    <article class="balance-card"><div class="card-head"><span>Агропромбанк</span><span class="account-icon">▣</span></div><div class="balance"><span id="balance-card">—</span><span class="unit">RUP</span></div><div class="balance-note">Деньги на карте</div></article>
+    <article class="balance-card"><div class="card-head"><span>Наличные</span><span class="account-icon">₽</span></div><div class="balance"><span id="balance-cash">—</span><span class="unit">RUP</span></div><div class="balance-note">Деньги на руках</div></article>
+    <article class="balance-card crypto"><div class="card-head"><span>Накопления</span><span class="account-icon">₮</span></div><div class="balance"><span id="balance-usdt">—</span><span class="unit">USDT</span></div><div class="balance-note">Отдельно от расходов в рублях</div></article>
+  </section>
+  <div class="notice"><span class="notice-icon">ⓘ</span><span><strong>Добро пожаловать!</strong> Это браузерная версия «Моих денег». Начальные счета пустые: нажми «Настроить» и введи свои балансы или выбери «Восстановить», чтобы загрузить JSON-копию старого трекера. Расходы сохраняются только в этом браузере и не синхронизируются с другими устройствами. Делай резервные копии.</span></div>
+  <section id="settings" class="panel settings" aria-label="Настройки начальных балансов">
+    <h3>Начальные балансы</h3><p class="panel-sub">Меняй их только для исправления стартовой точки. Новые доходы и расходы заноси через форму ниже.</p>
+    <div class="form-grid"><div class="form-row"><label for="initial-card">Карта, RUP</label><input id="initial-card" type="number" step="0.01" min="0" inputmode="decimal"></div><div class="form-row"><label for="initial-cash">Наличные, RUP</label><input id="initial-cash" type="number" step="0.01" min="0" inputmode="decimal"></div><div class="form-row"><label for="initial-usdt">Накопления, USDT</label><input id="initial-usdt" type="number" step="0.0001" min="0" inputmode="decimal"></div></div>
+    <button type="button" class="outline" id="saveInitial">Сохранить начальные балансы</button><p class="attention">Важно: история операций хранится только в этом браузере. Экспортируй резервную копию, чтобы не потерять данные.</p>
+  </section>
+  <section class="panel weekly-panel" id="weekly-panel" aria-label="Недельный лимит расходов">
+    <div class="weekly-head">
+      <div><div class="eyebrow">Контроль расходов</div><h3 style="font-size:20px;margin:4px 0">Лимит на неделю</h3><p class="panel-sub" style="margin:0">Все реальные покупки в RUP: и с карты, и наличными.</p></div>
+      <div class="week-nav" aria-label="Переключение недель">
+        <button type="button" id="week-prev" title="Предыдущая неделя" aria-label="Предыдущая неделя">←</button>
+        <span class="week-dates" id="week-dates">—</span>
+        <button type="button" id="week-next" title="Следующая неделя" aria-label="Следующая неделя">→</button>
+        <button type="button" id="week-today" title="Вернуться к текущей неделе">Сегодня</button>
+      </div>
+    </div>
+    <form id="weekly-form" class="weekly-config" autocomplete="off">
+      <div class="form-row"><label for="weekly-limit">Твой недельный лимит (RUP)</label><input id="weekly-limit" type="number" step="0.01" min="0" max="1000000000" inputmode="decimal" placeholder="Например, 700" required></div>
+      <button class="outline" type="submit">Сохранить лимит</button>
+      <span class="tiny">0 = отключить лимит. Один лимит применяется ко всем неделям.</span>
+    </form>
+    <div class="week-metrics" aria-live="polite">
+      <div class="week-metric"><div class="w-label">Потрачено за неделю</div><div id="week-spent" class="w-value">0 ₽</div></div>
+      <div class="week-metric"><div class="w-label">Лимит</div><div id="week-budget" class="w-value">Не задан</div></div>
+      <div class="week-metric"><div class="w-label" id="week-remaining-label">Осталось</div><div id="week-remaining" class="w-value w-good">—</div></div>
+    </div>
+    <div class="week-progress" role="progressbar" id="week-bar" aria-label="Использование недельного бюджета" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="week-progress-fill" id="week-fill"></div></div>
+    <div id="week-status" class="week-status" role="status">Задай недельный лимит, чтобы видеть остаток.</div>
+    <div class="week-details"><span id="week-percent">—</span><span id="week-daily">Переводы и обмен USDT не считаются расходами</span></div>
+  </section>
+  <div class="layout">
+    <div class="stack">
+      <section class="panel" id="editor"><h3>Новая операция</h3><p class="panel-sub">Добавь покупку, поступление или перевод между своими счетами.</p>
+        <div class="mode" role="tablist" aria-label="Тип операции"><button id="tab-expense" type="button" data-kind="expense" class="active" role="tab" aria-selected="true">− Расход</button><button id="tab-income" type="button" data-kind="income" role="tab" aria-selected="false">+ Доход</button><button id="tab-transfer" type="button" data-kind="transfer" role="tab" aria-selected="false">↔ Перевод</button></div>
+        <form id="tx-form" autocomplete="off">
+          <div class="form-grid">
+            <div class="form-row"><label for="tx-date">Дата</label><input id="tx-date" type="date" required></div>
+            <div class="form-row" id="regular-account-field"><label for="tx-account">Счёт</label><select id="tx-account"><option value="card">Агропромбанк · RUP</option><option value="cash">Наличные · RUP</option><option value="usdt">Накопления · USDT</option></select></div>
+            <div class="form-row" id="regular-amount-field"><label for="tx-amount">Сумма</label><input id="tx-amount" type="number" min="0.0001" step="any" inputmode="decimal" placeholder="Например, 65.50"></div>
+            <div class="form-row" id="category-field"><label for="tx-category">Категория</label><select id="tx-category"></select></div>
+            <div class="form-row full hidden" id="transfer-from-field"><label for="tx-from">Откуда</label><select id="tx-from"><option value="usdt">Накопления · USDT</option><option value="card">Агропромбанк · RUP</option><option value="cash">Наличные · RUP</option></select></div>
+            <div class="form-row hidden" id="transfer-to-field"><label for="tx-to">Куда</label><select id="tx-to"><option value="card">Агропромбанк · RUP</option><option value="cash">Наличные · RUP</option><option value="usdt">Накопления · USDT</option></select></div>
+            <div class="form-row hidden" id="transfer-out-field"><label for="tx-out">Сколько отправлено</label><input id="tx-out" type="number" min="0.0001" step="any" inputmode="decimal" placeholder="100"></div>
+            <div class="form-row hidden" id="transfer-in-field"><label for="tx-in">Сколько фактически получено</label><input id="tx-in" type="number" min="0.0001" step="any" inputmode="decimal" placeholder="1550"></div>
+            <div class="form-row full"><label for="tx-note">Комментарий (необязательно)</label><input id="tx-note" maxlength="160" placeholder="Например, продукты домой или обмен USDT"></div>
+          </div>
+          <p class="tiny" id="form-hint">Расход уменьшает выбранный счёт. Не добавляй сюда вывод USDT, если он превращается в рубли — для этого есть «Перевод».</p>
+          <button class="primary" type="submit" id="submitTx">Записать расход</button>
+        </form>
+      </section>
+      <section class="panel"><div class="summary-title"><div><h3>История операций</h3><p class="panel-sub" style="margin-bottom:0">Последние операции сверху</p></div><span id="tx-count" class="tag">0 записей</span></div><div id="tx-list" class="transactions"></div></section>
+    </div>
+    <div class="stack">
+      <section class="panel"><div class="summary-title"><div><h3>Аналитика расходов</h3><p class="panel-sub" style="margin:0">Только рубли ПМР</p></div><input aria-label="Месяц аналитики" type="month" id="month-filter"></div>
+        <div class="kpis"><div class="kpi"><div class="kpi-label">Потрачено</div><div class="kpi-val expense" id="month-expense">0 ₽</div><div class="small-note">По карте + наличными</div></div><div class="kpi"><div class="kpi-label">Поступило</div><div class="kpi-val income" id="month-income">0 ₽</div><div class="small-note">Без внутренних переводов</div></div></div><div id="category-bars"></div></section>
+      <section class="panel"><h3>Твои данные — у тебя</h3><p class="panel-sub">Скачай копию учёта или восстанови её из файла. Никаких банковских подключений.</p>
+        <div class="tools"><button class="outline" type="button" id="export-json">↓ Резервная копия</button><button class="outline" type="button" id="export-csv">↓ CSV для Excel</button><button class="outline" type="button" id="import-btn">↑ Восстановить</button><input id="import-file" accept="application/json,.json" type="file" class="hidden"></div>
+        <p class="tiny">Файл JSON сохраняет балансы, недельный лимит и историю. CSV — только операции. Данные хранятся локально в браузере (без шифрования); очистка данных браузера может их удалить.</p><div class="tools"><button class="outline danger" id="reset" type="button">Удалить все записи и вернуть стартовые суммы</button></div>
+      </section>
+      <section class="panel"><h3>Как не путать деньги</h3><p class="panel-sub" style="margin-bottom:0">Когда отправляешь 100 USDT обменнику и получаешь рубли, выбирай <strong style="color:var(--teal)">«Перевод»</strong>, указывай 100 USDT «откуда» и точное количество полученных рублей «куда». Это не расход. Реальную покупку продуктов в рублях вноси отдельно как <strong style="color:var(--teal)">«Расход»</strong>.</p></section>
+    </div>
+  </div>
+  <footer class="foot"><span>Онлайн-версия 1.0 · HTML + JavaScript</span><span>Не вводи пароли, seed-фразы и приватные ключи</span></footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+'use strict';
+const STORAGE_KEY='moi-dengi-web-v1';
+const DEFAULT={version:2,initial:{card:0,cash:0,usdt:0},transactions:[],weeklyLimit:0};
+const ACCOUNT={card:{label:'Агропромбанк',currency:'RUP'},cash:{label:'Наличные',currency:'RUP'},usdt:{label:'Накопления',currency:'USDT'}};
+const CATEGORIES={expense:['Продукты','Кафе и сладости','Транспорт','Встречи и подарки','Здоровье','Связь','Коммунальные','Развлечения','Покупки','Другое'],income:['Зарплата','Возврат долга','Подарок','Прочий доход']};
+const COLORS=['#59e0bf','#87a7ff','#ffd28a','#ee99a5','#9b92ed','#b2cc79','#71bec9','#ecae7f','#cca6dd','#9ab0c9'];
+const $=id=>document.getElementById(id);
+const deepCopy=x=>JSON.parse(JSON.stringify(x));
+const today=()=>{let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+let storageOk=true; let data=deepCopy(DEFAULT);let kind='expense';let weekAnchor=today();
+function safeLoad(){try{let raw=localStorage.getItem(STORAGE_KEY);if(raw){data=validate(JSON.parse(raw))}}catch(e){storageOk=false;showToast('Не удалось загрузить локальные данные. Используй резервные копии.')}}
+function safeSave(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));storageOk=true;return true}catch(e){storageOk=false;showToast('Браузер запретил сохранять данные. Скачай резервную копию!');return false}}
+function num(value){const n=Number(value);return Number.isFinite(n)?n:NaN}
+function round(v){return Math.round((v+Number.EPSILON)*1e6)/1e6}
+function fmt(n,d=2){return Number(n).toLocaleString('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:d})}
+function money(n,acc){return fmt(n,ACCOUNT[acc].currency==='USDT'?4:2)+' '+ACCOUNT[acc].currency}
+function validate(v){if(!v || typeof v!=='object'||!v.initial||!Array.isArray(v.transactions)||v.transactions.length>10000)throw Error('Неверный файл');let res={version:2,initial:{},transactions:[],weeklyLimit:0};if(v.weeklyLimit!==undefined){const limit=num(v.weeklyLimit);if(!Number.isFinite(limit)||limit<0||limit>1e9)throw Error('Некорректный недельный лимит');res.weeklyLimit=limit}for(const a of Object.keys(ACCOUNT)){let n=num(v.initial[a]);if(!Number.isFinite(n)||n<0||n>1e12)throw Error('Неправильный баланс');res.initial[a]=n}for(const t of v.transactions){if(!t||!['expense','income','transfer'].includes(t.kind)||!/^\d{4}-\d{2}-\d{2}$/.test(t.date))throw Error('Некорректная операция');let r={id:String(t.id||'').slice(0,70),kind:t.kind,date:t.date,note:String(t.note||'').slice(0,160)};if(t.kind==='transfer'){if(!ACCOUNT[t.from]||!ACCOUNT[t.to]||t.from===t.to)throw Error('Некорректный перевод');r.from=t.from;r.to=t.to;r.out=num(t.out);r.in=num(t.in);if(!(r.out>0&&r.in>0&&r.out<=1e12&&r.in<=1e12))throw Error('Некорректная сумма')}else{if(!ACCOUNT[t.account])throw Error('Некорректный счёт');r.account=t.account;r.amount=num(t.amount);r.category=String(t.category||'Другое').slice(0,70);if(!(r.amount>0&&r.amount<=1e12))throw Error('Некорректная сумма')}res.transactions.push(r)}return res}
+function balances(){const b={...data.initial};for(const t of data.transactions){if(t.kind==='transfer'){b[t.from]-=t.out;b[t.to]+=t.in}else{b[t.account]+=t.kind==='income'?t.amount:-t.amount}}return b}
+function render(){const b=balances();for(const a of Object.keys(ACCOUNT)){$('balance-'+a).textContent=fmt(b[a],a==='usdt'?4:2)}$('tx-count').textContent=data.transactions.length+' '+plural(data.transactions.length,['запись','записи','записей']);renderList();renderStats();renderWeekly();}
+function plural(n,p){return p[(n%10===1&&n%100!==11)?0:(n%10>=2&&n%10<=4&&(n%100<12||n%100>14))?1:2]}
+function renderList(){const el=$('tx-list');el.replaceChildren();if(!data.transactions.length){const div=document.createElement('div');div.className='empty';div.textContent='Пока нет записей. Добавь первый расход или поступление — и оно появится здесь.';el.append(div);return}
+  const rows=[...data.transactions].map((t,i)=>({t,i})).sort((a,b)=>b.t.date.localeCompare(a.t.date)||b.i-a.i).slice(0,40);for(const {t} of rows){let wrap=document.createElement('div');wrap.className='transaction';const icon=document.createElement('div');icon.className='tx-icon '+(t.kind==='expense'?'exp':t.kind==='transfer'?'transfer':'');icon.textContent=t.kind==='expense'?'−':t.kind==='income'?'+':'↔';const details=document.createElement('div');details.style.minWidth='0';const name=document.createElement('div');name.className='tx-name';name.textContent=t.kind==='transfer'?'Перевод / обмен':t.category;const desc=document.createElement('div');desc.className='tx-desc';desc.textContent=t.date.split('-').reverse().join('.')+' · '+(t.kind==='transfer'?ACCOUNT[t.from].label+' → '+ACCOUNT[t.to].label:ACCOUNT[t.account].label)+(t.note?' · '+t.note:'');details.append(name,desc);const val=document.createElement('div');val.className='tx-value '+(t.kind==='expense'?'exp':t.kind==='income'?'income':'transfer');if(t.kind==='transfer'){val.textContent='−'+money(t.out,t.from);const second=document.createElement('span');second.className='tx-small';second.textContent='+'+money(t.in,t.to);val.append(second)}else val.textContent=(t.kind==='expense'?'−':'+')+money(t.amount,t.account);const del=document.createElement('button');del.type='button';del.className='icon-button';del.textContent='✕';del.title='Удалить операцию';del.setAttribute('aria-label','Удалить операцию');del.addEventListener('click',()=>{if(confirm('Удалить эту операцию?')){data.transactions=data.transactions.filter(x=>x.id!==t.id);safeSave();render();showToast('Операция удалена')}});wrap.append(icon,details,val,del);el.append(wrap)}}
+function dateFromISO(iso){const [y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d,12,0,0)}
+function dateToISO(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function weekRange(anchor){const date=dateFromISO(anchor);const offset=(date.getDay()+6)%7;date.setDate(date.getDate()-offset);const start=dateToISO(date);date.setDate(date.getDate()+6);return {start,end:dateToISO(date)}}
+function shiftWeek(days){const d=dateFromISO(weekAnchor);d.setDate(d.getDate()+days);weekAnchor=dateToISO(d);renderWeekly()}
+function rubleExpense(t){return t.kind==='expense'&&(t.account==='card'||t.account==='cash')}
+function weekSpent(range){return data.transactions.reduce((s,t)=>s+(rubleExpense(t)&&t.date>=range.start&&t.date<=range.end?t.amount:0),0)}
+function shortDate(iso){const [y,m,d]=iso.split('-');return d+'.'+m+'.'+y}
+function renderWeekly(){
+  const range=weekRange(weekAnchor),spent=weekSpent(range),limit=data.weeklyLimit||0;
+  $('week-dates').textContent=shortDate(range.start)+' — '+shortDate(range.end);
+  $('weekly-limit').value=limit?String(limit):'';
+  $('week-spent').textContent=fmt(spent)+' ₽';
+  $('week-budget').textContent=limit?fmt(limit)+' ₽':'Не задан';
+  const remaining=limit?Math.max(0,limit-spent):0,over=limit?Math.max(0,spent-limit):0,ratio=limit?spent/limit:0;
+  $('week-remaining-label').textContent=limit&&over>0?'Сверх лимита':'Осталось';
+  const left=$('week-remaining');left.textContent=limit?fmt(over>0?over:remaining)+' ₽':'—';left.className='w-value '+(over>0?'w-bad':ratio>=.8?'w-warn':'w-good');
+  $('week-fill').style.width=(limit?Math.min(100,ratio*100):0)+'%';
+  $('week-fill').className='week-progress-fill '+(over>0?'exceeded':ratio>=.8?'warning':'');
+  $('week-bar').setAttribute('aria-valuenow',String(limit?Math.min(100,Math.round(ratio*100)):0));
+  const status=$('week-status');status.className='week-status '+(over>0?'exceeded':ratio>=.8?'warning':'');
+  const isCurrent=weekRange(today()).start===range.start;
+  if(!limit){status.textContent='Лимит пока не установлен. Введи сумму в рублях ПМР и нажми «Сохранить».';$('week-percent').textContent='—';$('week-daily').textContent='Переводы и обмен USDT не считаются расходами';}
+  else{
+    status.textContent=over>0?'Лимит превышен на '+fmt(over)+' ₽. Новые траты всё равно можно записывать.':ratio>=1?'Недельный лимит исчерпан.':ratio>=.8?'Использовано больше 80% бюджета. Проверь предстоящие покупки.':'Ты укладываешься в установленный недельный бюджет.';
+    $('week-percent').textContent=fmt(ratio*100,1)+'% лимита использовано';
+    if(isCurrent){const days=Math.round((dateFromISO(range.end)-dateFromISO(today()))/86400000)+1;$('week-daily').textContent='На оставшиеся '+days+' дн.: около '+fmt(remaining/days)+' ₽ в день';}
+    else $('week-daily').textContent='Переводы между счетами не учитываются';
+  }
+}
+function renderStats(){const month=$('month-filter').value||today().slice(0,7);const relevant=data.transactions.filter(t=>t.date.startsWith(month));const expense=relevant.filter(t=>t.kind==='expense'&&ACCOUNT[t.account].currency==='RUP');const income=relevant.filter(t=>t.kind==='income'&&ACCOUNT[t.account].currency==='RUP');const spent=expense.reduce((s,t)=>s+t.amount,0), earned=income.reduce((s,t)=>s+t.amount,0);$('month-expense').textContent=fmt(spent)+' ₽';$('month-income').textContent=fmt(earned)+' ₽';const groups={};for(const t of expense)groups[t.category]=(groups[t.category]||0)+t.amount;const items=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const target=$('category-bars');target.replaceChildren();if(!items.length){const e=document.createElement('div');e.className='empty';e.textContent='В этом месяце нет записанных расходов в рублях. Переводы и обмены сюда не входят.';target.append(e);return}const bars=document.createElement('div');bars.className='bars';items.forEach(([name,sum],i)=>{const row=document.createElement('div');row.className='bar-row';const upper=document.createElement('div');upper.className='bar-line';const left=document.createElement('span');left.className='name';left.textContent=name;const right=document.createElement('span');right.className='amount';right.textContent=fmt(sum)+' ₽';upper.append(left,right);const track=document.createElement('div');track.className='bar-track';const fill=document.createElement('div');fill.className='bar-fill';fill.style.width=(spent?100*sum/spent:0)+'%';fill.style.background=COLORS[i%COLORS.length];track.append(fill);row.append(upper,track);bars.append(row)});target.append(bars)}
+function showToast(str){const el=$('toast');el.textContent=str;el.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>el.classList.remove('show'),3400)}
+function setKind(k){kind=k;for(const b of document.querySelectorAll('.mode button')){const a=b.dataset.kind===k;b.classList.toggle('active',a);b.setAttribute('aria-selected',String(a))}const tr=k==='transfer';for(const id of ['regular-account-field','regular-amount-field','category-field'])$(id).classList.toggle('hidden',tr);for(const id of ['transfer-from-field','transfer-to-field','transfer-out-field','transfer-in-field'])$(id).classList.toggle('hidden',!tr);$('tx-category').replaceChildren();if(!tr)for(const x of CATEGORIES[k]){let opt=document.createElement('option');opt.value=x;opt.textContent=x;$('tx-category').append(opt)}$('submitTx').textContent=tr?'Записать перевод':k==='expense'?'Записать расход':'Записать доход';$('form-hint').textContent=tr?'При обмене валют указывай сумму USDT, которую отправил, и точную сумму рублей, которую получил. Разницу курсов не считаем покупкой.':k==='expense'?'Расход уменьшает выбранный счёт. Не добавляй сюда вывод USDT, если он превращается в рубли — для этого есть «Перевод».':'Доход увеличивает выбранный счёт. Когда зарплата приходит в USDT, выбирай счёт «Накопления».';}
+function getPositive(id){const x=num($(id).value);if(!Number.isFinite(x)||x<=0||x>1e12)throw Error('Введи корректную положительную сумму');return x}
+function uniqueId(){return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9)}
+function addTransaction(ev){ev.preventDefault();try{const date=$('tx-date').value;if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw Error('Укажи дату');const t={id:uniqueId(),kind,date,note:$('tx-note').value.trim().slice(0,160)};if(kind==='transfer'){t.from=$('tx-from').value;t.to=$('tx-to').value;if(t.from===t.to)throw Error('Выбери разные счета');t.out=getPositive('tx-out');t.in=getPositive('tx-in');}else{t.account=$('tx-account').value;t.amount=getPositive('tx-amount');t.category=$('tx-category').value}data.transactions.push(t);safeSave();render();$('tx-note').value='';$('tx-amount').value='';$('tx-out').value='';$('tx-in').value='';if(kind==='expense'&&t.account!=='usdt'&&data.weeklyLimit>0&&weekSpent(weekRange(date))>data.weeklyLimit)showToast('Расход сохранён. Недельный лимит превышен!');else showToast('Операция сохранена');}catch(e){showToast(e.message||'Не удалось сохранить операцию')}}
+function download(name,content,mime){const blob=new Blob([content],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function csvCell(s){return '"'+String(s??'').replaceAll('"','""')+'"'}
+function exportCsv(){const rows=[['Дата','Тип','Категория','Счёт/Откуда','Куда','Сумма списания','Валюта списания','Сумма получения','Валюта получения','Комментарий']];for(const t of data.transactions){if(t.kind==='transfer')rows.push([t.date,'Перевод/обмен','',ACCOUNT[t.from].label,ACCOUNT[t.to].label,t.out,ACCOUNT[t.from].currency,t.in,ACCOUNT[t.to].currency,t.note]);else rows.push([t.date,t.kind==='expense'?'Расход':'Доход',t.category,ACCOUNT[t.account].label,'',t.amount,ACCOUNT[t.account].currency,'','',t.note])}const csv='\uFEFF'+rows.map(r=>r.map(csvCell).join(';')).join('\r\n');download('moi-dengi-operations-'+today()+'.csv',csv,'text/csv;charset=utf-8')}
+function bind(){document.querySelectorAll('.mode button').forEach(b=>b.addEventListener('click',()=>setKind(b.dataset.kind)));$('tx-form').addEventListener('submit',addTransaction);$('month-filter').addEventListener('change',renderStats);$('week-prev').addEventListener('click',()=>shiftWeek(-7));$('week-next').addEventListener('click',()=>shiftWeek(7));$('week-today').addEventListener('click',()=>{weekAnchor=today();renderWeekly()});$('weekly-form').addEventListener('submit',e=>{e.preventDefault();const v=Number($('weekly-limit').value);if(!Number.isFinite(v)||v<0||v>1e9){showToast('Укажи лимит от 0 до 1 млрд RUP');return}data.weeklyLimit=v;safeSave();renderWeekly();showToast(v?'Недельный лимит сохранён':'Недельный лимит отключён')});$('settingsToggle').addEventListener('click',()=>{let open=$('settings').classList.toggle('open');$('settingsToggle').textContent=open?'✕ Закрыть':'⚙ Настроить';if(open)$('settings').scrollIntoView({behavior:'smooth',block:'nearest'})});$('saveInitial').addEventListener('click',()=>{const v={};for(const a of Object.keys(ACCOUNT)){v[a]=num($('initial-'+a).value);if(!Number.isFinite(v[a])||v[a]<0||v[a]>1e12){showToast('Проверь начальные балансы');return}}data.initial=v;safeSave();render();showToast('Начальные балансы обновлены')});$('export-json').addEventListener('click',()=>{download('moi-dengi-backup-'+today()+'.json',JSON.stringify(data,null,2),'application/json;charset=utf-8');showToast('Резервная копия скачана')});$('export-csv').addEventListener('click',exportCsv);$('import-btn').addEventListener('click',()=>$('import-file').click());$('import-file').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>5e6)throw Error('Файл слишком большой');const parsed=validate(JSON.parse(await f.text()));if(!confirm('Заменить текущие данные данными из файла? Сначала можно скачать резервную копию.'))return;data=parsed;safeSave();refreshSettings();render();showToast('Данные восстановлены')}catch(err){showToast('Ошибка импорта: '+err.message)}finally{$('import-file').value=''}});$('reset').addEventListener('click',()=>{if(!confirm('Стереть всю историю и восстановить стартовые суммы? Это нельзя отменить без резервной копии.'))return;if(!confirm('Точно удалить все записи?'))return;data=deepCopy(DEFAULT);safeSave();refreshSettings();render();showToast('Учёт сброшен')});$('tx-from').addEventListener('change',refreshTransfer);$('tx-to').addEventListener('change',refreshTransfer);}
+function refreshTransfer(){const from=$('tx-from').value,to=$('tx-to').value;if(from===to){$('tx-in').placeholder='Выбери другой счёт';return}const same=ACCOUNT[from].currency===ACCOUNT[to].currency;$('tx-in').placeholder=same?'Та же сумма, что отправлено':'Сколько получил по курсу обмена';if(same&&!$('tx-in').value&&$('tx-out').value)$('tx-in').value=$('tx-out').value}
+function refreshSettings(){for(const a of Object.keys(ACCOUNT))$('initial-'+a).value=data.initial[a]}
+safeLoad();$('tx-date').value=today();$('month-filter').value=today().slice(0,7);refreshSettings();bind();setKind('expense');render();
+if(!storageOk){const note=document.createElement('div');note.className='notice';note.textContent='Внимание: локальное хранение недоступно. Пользуйся резервной копией JSON после каждой сессии.';document.querySelector('.app').insertBefore(note,document.querySelector('.layout'))}
+})();
+</script>
+</body>
+</html>
