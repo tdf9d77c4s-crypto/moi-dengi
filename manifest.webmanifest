@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Мои деньги — Capybara Focus",
+  "name": "Мои деньги — Living 3D",
   "short_name": "Мои деньги",
-  "description": "Финансовый трекер с капибарой, бюджетами и целями",
+  "description": "Личные финансы с интерактивным 3D-персонажем",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

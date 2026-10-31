@@ -29,6 +29,32 @@ function balances(){const b={...state.initial};for(const t of state.transactions
 async function save(){if(!state)throw Error('Учёт закрыт');if(guestMode){localStorage.setItem(GUEST,JSON.stringify(state));return}if(!key||!salt)throw Error('Требуется пароль');localStorage.setItem(STORE,JSON.stringify(await seal(state,key,salt)))}
 async function change(doChange,message='Сохранено'){const old=copy(state);try{doChange();state=validate(state);await save();renderAll();toast(message);return true}catch(e){state=old;toast('Не удалось сохранить: '+e.message);return false}}
 function setTheme(t){if(!['premium','neobank','minimal','focus','capy'].includes(t))t='premium';currentTheme=t;document.documentElement.dataset.theme=t;try{localStorage.setItem(THEME,t)}catch{}$$('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===t))}
+const PET_KEY='moi-dengi-persona-v25',MOTION_KEY='moi-dengi-mascot-motion-v25';
+let selectedPet='capybara';
+function applyPet(pet,announce=false){
+  selectedPet=pet==='dachshund'?'dachshund':'capybara';
+  document.documentElement.dataset.pet=selectedPet;
+  const box=$('living-theater');if(box)box.dataset.pet=selectedPet;
+  $('mascot-hero-title').textContent=selectedPet==='capybara'?'Знакомься, Капи.':'Знакомься, Дакси.';
+  $('mascot-hero-sub').textContent=selectedPet==='capybara'?'Спокойствие — тоже суперсила':'Небольшой рост. Большие цели.';
+  $('mascot-viewer').setAttribute('aria-label',selectedPet==='capybara'?'Объёмная капибара. Поверни пальцем или мышкой.':'Объёмная такса. Поверни пальцем или мышкой.');
+  $$('[data-pet-choice]').forEach(b=>{const active=b.dataset.petChoice===selectedPet;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+  try{localStorage.setItem(PET_KEY,selectedPet)}catch{}
+  const fb=$('mascot-fallback-animal');if(fb)fb.textContent=selectedPet==='capybara'?'🦫':'🐕';
+  window.MoneyMascot?.switchPet?.(selectedPet);
+  if(announce)toast(selectedPet==='capybara'?'Капи вернулась!':'Теперь с тобой Дакси!');
+}
+function initPet(){let initial='capybara';try{initial=localStorage.getItem(PET_KEY)||'capybara'}catch{};
+  applyPet(initial);const noMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let motion=!noMotion;try{const m=localStorage.getItem(MOTION_KEY);if(m!==null)motion=m==='1'&&!noMotion}catch{}
+  $('mascot-motion').checked=motion;
+  window.MoneyMascot?.init?.({canvas:$('mascot-canvas'),viewer:$('mascot-viewer'),pet:selectedPet,motion});
+  $('paw-switch').onclick=()=>applyPet(selectedPet==='capybara'?'dachshund':'capybara',true);
+  $('theater-paw').onclick=()=>applyPet(selectedPet==='capybara'?'dachshund':'capybara',true);
+  $$('[data-pet-choice]').forEach(b=>b.onclick=()=>{applyPet(b.dataset.petChoice,true);goto('home')});
+  $('mascot-motion').onchange=()=>{try{localStorage.setItem(MOTION_KEY,$('mascot-motion').checked?'1':'0')}catch{};
+    window.MoneyMascot?.setMotion?.($('mascot-motion').checked&&!noMotion)};
+}
 function showApp(){ $('auth').classList.add('hidden');$('app').classList.remove('hidden');$('backup-warning').textContent=guestMode?'Без пароля: JSON и CSV хранят данные в открытом виде. Не публикуй их!':'Защищённый режим: JSON-копия зашифрована паролем; CSV НЕ зашифрован.';$('protect-data').classList.toggle('hidden',!guestMode);$('change-password').classList.toggle('hidden',guestMode);$('lock-data').classList.toggle('hidden',guestMode);$('privacy-info').textContent=guestMode?'Открытый режим: данные доступны людям с доступом к твоему браузеру. Можно включить шифрование.':'Записи зашифрованы AES-GCM в браузере. Пароль нужен только на этом устройстве.';$('side-privacy').textContent=guestMode?'Без пароля · локально':'Защищено · локально';goto('home');renderAll();resetTimeout()}
 function openGuest(){if(localStorage.getItem(STORE))throw Error('На устройстве уже есть защищённые записи');const raw=localStorage.getItem(GUEST);state=raw?validate(JSON.parse(raw)):DEFAULT();guestMode=true;key=null;salt=null;showApp()}
 function presentAuth(mode){authMode=mode;$('auth').classList.remove('hidden');$('app').classList.add('hidden');$('auth-error').textContent='';$('auth-pass').value='';$('auth-confirm').value='';const setup=mode!=='unlock';$('auth-title').textContent=mode==='unlock'?'Вход в личный учёт':mode==='protect'?'Защитить записи':'Установить пароль';$('auth-description').textContent=mode==='unlock'?'Найдены защищённые записи. Введи прежний пароль — они не были удалены.':mode==='protect'?'Создай пароль: текущие записи будут зашифрованы.':'Найдены записи старой версии. Создай пароль для безопасного переноса.';$('confirm-wrap').classList.toggle('hidden',!setup);$('auth-submit').textContent=setup?'Защитить записи':'Открыть трекер';$('auth-guest').classList.toggle('hidden',mode!=='protect');$('auth-pass').autocomplete=setup?'new-password':'current-password'}
@@ -44,13 +70,13 @@ const ICONS={'Продукты':'▦','Доставка еды':'◈','Кафе 
 const OPTIONAL_CATS=new Set(['Доставка еды','Кафе и сладости','Встречи и подарки','Покупки','Одежда','Техника']);
 function daysRemainingWeek(){const d=new Date(today()+'T12:00:00');return 7-((d.getDay()+6)%7)}
 function celebration(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const wrap=document.createElement('div');wrap.className='confetti-layer';wrap.setAttribute('aria-hidden','true');for(let i=0;i<20;i++){const bit=document.createElement('i');bit.style.left=(10+(i*37)%80)+'%';bit.style.animationDelay=((i%7)*.07)+'s';bit.style.setProperty('--confetti-rot',(i*47)+'deg');wrap.append(bit)}document.body.append(wrap);setTimeout(()=>wrap.remove(),2500)}
-function updateMascot(spent,limit){const root=$('mascot-card');let mood='calm',say='Капи рядом. Записывай расходы в своём темпе.';
+function updateMascot(spent,limit){const root=$('living-theater');let mood='calm',say='Приятно, когда всё под контролем.';
  if(limit>0&&spent>limit){mood='sad';say='На этой неделе вышло больше плана. Ничего страшного — просто учтём это.'}
  else if(limit>0&&spent/limit>=.8){mood='worried';say='Лимит почти исчерпан. Возможно, пригодится небольшая пауза.'}
  else if(state.goals.some(g=>g.target>0&&g.saved>=g.target)){mood='happy';say='Ура! Одна из целей достигнута. Капи празднует вместе с тобой!'}
  else if(limit>0){mood='calm';say='План под контролем. Пусть остаётся место и для радостей.'}
  else say='Задай недельный ориентир — и Капи будет помогать с ним.';
- root.dataset.mood=mood;$('mascot-say').textContent=say;
+ root.dataset.mood=mood;$('mascot-say').textContent=say;window.MoneyMascot?.setMood?.(mood);
 }
 function renderDaily(spent,limit){const days=daysRemainingWeek(),remaining=limit-spent;
  $('daily-allowance').textContent=limit>0?fmt(Math.max(0,remaining)/days)+' RUP':'—';
@@ -70,7 +96,7 @@ function openAccountDetail(code){if(!AC[code])return;const b=balances(),a=AC[cod
  $('account-spend').onclick=()=>openTx('expense',{account:code});$('account-income').onclick=()=>openTx('income',{account:code});$('account-transfer').onclick=()=>openTx('transfer',{account:code});
 }
 function renderHome(){const b=balances();$('hero-card').textContent=fmt(b.card);$('account-grid').replaceChildren();
- const accountNames={card:'Карта',cash:'Наличные',usdt:'USDT',usd:'Доллары'};
+ const accountNames={card:'Карта ПМР',cash:'Наличные',usdt:'USDT',usd:'USD'};
  const accountCodes={card:'PMR · карта',cash:'PMR · наличные',usdt:'Цифровые активы',usd:'Резерв в долларах'};
  const accountGlyphs={card:'▤',cash:'◉',usdt:'₮',usd:'$'};
  for(const ac of ['card','cash','usdt','usd']){
@@ -181,7 +207,7 @@ function initAutoUpdates(){
 }
 // -------- End Auto Update --------
 
-async function init(){try{setTheme((localStorage.getItem(THEME)||'premium')==='neobank'?'premium':(localStorage.getItem(THEME)||'premium'));$('today-label').textContent=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'});attach();initAutoUpdates();if(!crypto?.subtle||!window.isSecureContext){$('auth').classList.remove('hidden');$('auth-title').textContent='Нужен HTTPS';$('auth-description').textContent='Открой приложение по HTTPS, чтобы безопасно работать с финансовыми данными.';$('auth-submit').disabled=true;return}try{localStorage.setItem('__moi_test','1');localStorage.removeItem('__moi_test')}catch{$('auth').classList.remove('hidden');$('auth-title').textContent='Запрещено хранение';$('auth-description').textContent='Разреши локальное хранилище в браузере.';$('auth-submit').disabled=true;return}
+async function init(){try{initPet();setTheme((localStorage.getItem(THEME)||'premium')==='neobank'?'premium':(localStorage.getItem(THEME)||'premium'));$('today-label').textContent=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'});attach();initAutoUpdates();if(!crypto?.subtle||!window.isSecureContext){$('auth').classList.remove('hidden');$('auth-title').textContent='Нужен HTTPS';$('auth-description').textContent='Открой приложение по HTTPS, чтобы безопасно работать с финансовыми данными.';$('auth-submit').disabled=true;return}try{localStorage.setItem('__moi_test','1');localStorage.removeItem('__moi_test')}catch{$('auth').classList.remove('hidden');$('auth-title').textContent='Запрещено хранение';$('auth-description').textContent='Разреши локальное хранилище в браузере.';$('auth-submit').disabled=true;return}
  if(localStorage.getItem(STORE))presentAuth('unlock');else if(localStorage.getItem(LEGACY))presentAuth('setup');else openGuest();
  if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{})});
  }catch(e){console.error(e);$('auth').classList.remove('hidden');$('auth-error').textContent='Ошибка запуска: '+e.message}}
