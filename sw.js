@@ -1,5 +1,5 @@
 /* Capybara Focus v2.3.1: network-first, offline fallback. Never touches private data. */
-const CACHE='moi-dengi-pwa-v231-20261031-1';
+const CACHE='moi-dengi-pwa-v240-20261031-1';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./version.json','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 const INDEX=new URL('./index.html',self.registration.scope).href;
 const SCOPE=new URL(self.registration.scope);
