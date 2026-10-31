@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Мои деньги · Premium Living",
+  "name": "Мои деньги · Premium Minimal",
   "short_name": "Мои деньги",
-  "description": "Личные финансы в двух атмосферных мирах с анимированными персонажами",
+  "description": "Простой учёт доходов, расходов и целей с атмосферными персонажами",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

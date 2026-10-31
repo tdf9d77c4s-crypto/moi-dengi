@@ -319,3 +319,80 @@ html.pet-motion-off .pet-stage img#pet-tail,html.pet-motion-off .living-theater 
 @media(max-width:900px){.world-world{animation:none!important;transform:none!important;inset:0!important}.world-glimmers{filter:none;animation:none}.living-insights{gap:10px;padding:13px!important}.living-insight-icon{width:37px;height:37px;border-radius:12px}.living-insight-copy strong{font-size:13px}.living-insight-copy p{font-size:11px}.streak-pill{font-size:9px;padding:7px 8px;max-width:78px}.unified-vault,.living-theater,.panel,.budget-hero{backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important}}
 @media(max-width:410px){.living-insights{gap:8px}.streak-pill{max-width:73px}.living-insight-copy .eyebrow{font-size:8px}.living-insight-copy strong{font-size:12px}.living-insight-copy p{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.world-world,.world-glimmers,.view.active,.pet-stage img#pet-cutout,.pet-stage img#pet-tail,.account-grid.just-saved{animation:none!important;transition:none!important}}
+
+
+/* Premium Minimal 2.8: focused home; keep all legacy data and secondary views intact. */
+#view-home .living-insights,#view-home .world-quick-actions,#view-home .home-side{display:none!important}
+#view-home .home-lower{display:block!important;margin-top:14px!important}
+#view-home .home-lower .recent{width:100%!important;max-width:none!important;margin:0!important}
+#view-home .home-lower .recent .tx-row:nth-child(n+4){display:none}
+#view-home .living-theater{height:235px!important;min-height:0!important;margin:0 0 12px!important;border-radius:21px!important;box-shadow:0 16px 40px #0004!important}
+#view-home .theater-copy{top:18px!important;left:24px!important}
+#view-home .theater-copy h2{font-size:clamp(20px,2.4vw,31px)!important;line-height:1.15!important;max-width:260px}
+#view-home .theater-copy p{font-size:11px!important;line-height:1.4!important}
+#view-home .mascot-speech{background:#0c1720a1!important;backdrop-filter:blur(10px);border-radius:13px!important;padding:9px 13px!important}
+#view-home .vault-head{margin:18px 3px 10px!important}
+#view-home .vault-head h2{font-size:19px!important;letter-spacing:-.04em}
+#view-home .vault-head .vault-note{font-size:11px!important;color:var(--muted)}
+#view-home .unified-vault{padding:10px!important;border-radius:22px!important;margin:0 0 14px!important;box-shadow:0 14px 32px #0003!important}
+#view-home .unified-vault .premium-accounts{gap:9px!important}
+#view-home .unified-vault .premium-account{min-height:126px!important;padding:16px!important;border-radius:16px!important}
+#view-home .unified-vault .premium-account .pa-value{font-size:clamp(22px,2.4vw,30px)!important}
+#view-home .premium-budget-row{margin:0 0 13px!important;display:block!important}
+#view-home .premium-budget-row>.budget-hero{padding:19px 21px!important;border-radius:20px!important}
+#view-home .premium-budget-row .budget-hero h2{font-size:clamp(22px,2.4vw,31px)!important;margin:4px 0 0!important}
+#view-home .premium-budget-row .premium-budget-bottom{margin-top:10px!important}
+#view-home .premium-history .recent{padding:19px 21px!important;border-radius:20px!important}
+#view-home .premium-history .recent .panel-title-row{margin-bottom:7px!important}
+#view-home .premium-history .recent .tx-row{min-height:51px!important;padding:10px 0!important}
+#view-home .welcome-nudge{padding:14px 15px;border-radius:15px;gap:12px;margin:0 0 14px}
+#view-home .welcome-nudge p{max-width:400px}
+#view-home .welcome-close{border:0;background:transparent;color:var(--muted);font-size:21px;cursor:pointer;padding:4px 8px}
+#view-home .welcome-nudge .btn{min-width:82px}
+.topbar #quick-top{border-radius:14px;padding:11px 18px;min-height:43px}
+.mobile-nav .mobile-add{box-shadow:0 4px 20px color-mix(in srgb,var(--accent) 23%,transparent)!important}
+/* Keep the amount, category and account visible; details are collapsed by default. */
+#entry-form{display:flex;flex-direction:column;gap:7px}
+#entry-form>.field,#entry-form>.field-grid{margin:0 0 3px}
+#entry-form .tabs{margin-bottom:8px}
+#entry-form .big-sum{font-size:29px!important;font-weight:750!important;letter-spacing:-.05em;min-height:65px!important}
+#entry-form .field label{font-size:12px}
+#entry-form .field select,#entry-form .field input:not(.big-sum){min-height:49px}
+#entry-form .entry-more{margin-top:4px}
+#entry-form>.btn.primary.full{border-radius:14px;min-height:50px;font-size:14px;margin-top:11px}
+#entry-form .quick-chips,#entry-form .entry-repeat{display:none!important}
+#view-home .vault-note{font-weight:500}
+@media(min-width:1200px){#view-home{max-width:1030px;margin:0 auto}#view-home .living-theater{height:252px!important}}
+@media(max-width:720px){
+ .topbar #quick-top{display:none!important}
+ #view-home .living-theater{height:225px!important;border-radius:21px!important}
+ #view-home .theater-copy{top:17px!important;left:17px!important}
+ #view-home .theater-copy h2{font-size:19px!important;max-width:140px!important}
+ #view-home .theater-copy p{font-size:10px!important;max-width:130px!important}
+ #view-home .pet-stage{bottom:-89px!important}
+ #view-home .theater-bottom{bottom:11px!important}
+ #view-home .vault-head{margin:15px 3px 8px!important}
+ #view-home .vault-head h2{font-size:18px!important}
+ #view-home .unified-vault{padding:8px!important;border-radius:19px!important;margin-bottom:11px!important}
+ #view-home .unified-vault .premium-accounts{gap:7px!important}
+ #view-home .unified-vault .premium-account{min-height:103px!important;padding:11px!important;border-radius:13px!important}
+ #view-home .unified-vault .premium-account .pa-value{font-size:clamp(17px,4.8vw,23px)!important;margin:7px 0!important}
+ #view-home .unified-vault .premium-account .pa-name{font-size:11px!important}
+ #view-home .unified-vault .premium-account .pa-bottom{font-size:9px!important}
+ #view-home .premium-budget-row>.budget-hero{padding:16px!important}
+ #view-home .premium-history .recent{padding:16px!important}
+ #view-home .welcome-nudge{padding:13px 12px;gap:7px}
+ #view-home .welcome-nudge .welcome-icon{font-size:22px}
+ #view-home .welcome-nudge .btn{min-width:0;font-size:11px}
+}
+@media(max-width:370px){#view-home .unified-vault .premium-account{padding:9px!important;min-height:97px!important}#view-home .unified-vault .premium-account .pa-value{font-size:16px!important}}
+@media(prefers-reduced-motion:reduce){#view-home *{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+/* 2.8 hero sizing: full head visible instead of the old oversized crop. */
+@media(min-width:721px){
+ #view-home .pet-stage{left:53%!important;width:330px!important;height:355px!important;bottom:-118px!important;transform:translateX(-7%)!important}
+ html[data-pet="dachshund"] #view-home .pet-stage{left:51%!important;width:404px!important;height:355px!important;bottom:-118px!important;transform:translateX(-5%)!important}
+}
+@media(max-width:720px){
+ #view-home .pet-stage{left:calc(50% - 88px)!important;width:min(82vw,305px)!important;height:335px!important;bottom:-105px!important;transform:none!important}
+ html[data-pet="dachshund"] #view-home .pet-stage{left:45px!important;width:min(89vw,335px)!important;height:333px!important;bottom:-108px!important;transform:none!important}
+}

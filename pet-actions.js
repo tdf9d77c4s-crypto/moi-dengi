@@ -2,7 +2,7 @@
 (()=>{'use strict';
  const $=id=>document.getElementById(id),reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const AUDIO_KEY='moi-dengi-pet-sound-v26';let kind='capybara',motion=!reduce.matches,busy=false,mood='calm',audio={};
- const sounds=()=>{try{return localStorage.getItem(AUDIO_KEY)!=='off'}catch{return true}};
+ const sounds=()=>{try{return localStorage.getItem(AUDIO_KEY)==='on'}catch{return false}};
  function play(name){if(!sounds())return;try{if(!audio[name]){audio[name]=new Audio('./'+name+'.wav');audio[name].preload='auto';audio[name].volume=name==='bark'?0.43:0.36;}audio[name].pause();audio[name].currentTime=0;audio[name].play()?.catch(()=>{});}catch{}}
  function say(text){const el=$('mascot-say');if(el)el.textContent=text}
  function setPet(p){kind=p==='dachshund'?'dachshund':'capybara';document.documentElement.dataset.pet=kind;
